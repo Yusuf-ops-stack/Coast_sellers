@@ -78,33 +78,99 @@ p{
 
   <button onclick="login()">Login</button>
 
-  <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+  <p>Don't have an account? <a href="/sign up/index.html">Sign Up</a></p>
 </div>
 
-<script>
+<script type="module">
 
-function login(){
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyD7DFAUxSfpGWmVegVY38J6khc9o5JE3LA",
+  authDomain: "coastmall-sellers.firebaseapp.com",
+  projectId: "coastmall-sellers",
+  storageBucket: "coastmall-sellers.firebasestorage.app",
+  messagingSenderId: "360613421614",
+  appId: "1:360613421614:web:6912f4a5a131deb1cef5bf"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// 🔥 Detect Google user
+window.onload = function(){
+
+  let googleUser = JSON.parse(localStorage.getItem("googleUser"));
+
+  if(googleUser){
+
+    // Show Google box
+    document.getElementById("googleBox").style.display = "block";
+
+    document.getElementById("gPhoto").src = googleUser.photo;
+    document.getElementById("gName").innerText = googleUser.name;
+    document.getElementById("gEmail").innerText = googleUser.email;
+
+    // Hide manual inputs
+    document.getElementById("email").style.display = "none";
+    document.getElementById("password").style.display = "none";
+  }
+
+}
+
+// 🔥 Continue with Google (no login again)
+window.continueGoogle = function(){
+
+  let googleUser = JSON.parse(localStorage.getItem("googleUser"));
+
+  if(googleUser){
+
+    localStorage.setItem("loggedUser", JSON.stringify(googleUser));
+
+    // Clear temp data
+    localStorage.removeItem("googleUser");
+
+    alert("Welcome " + googleUser.name);
+
+    window.location.href = "index.html";
+  }
+}
+
+// Normal email login
+window.login = function(){
 
   let email = document.getElementById("email").value;
   let password = document.getElementById("password").value;
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
-
-  let user = users.find(u => u.email === email && u.password === password);
-
-  if(!user){
-    alert("Invalid login");
+  if(!email || !password){
+    alert("Please fill all fields");
     return;
   }
 
-  localStorage.setItem("loggedUser", JSON.stringify(user));
+  signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
 
-  alert("Login successful!");
+    const user = userCredential.user;
 
-  window.location.href = "index.html";
+    localStorage.setItem("loggedUser", JSON.stringify({
+      uid: user.uid,
+      email: user.email
+    }));
+
+    alert("Login successful!");
+    window.location.href = "index.html";
+
+  })
+  .catch((error) => {
+    alert(error.message);
+  });
 }
 
 </script>
+
+
 
 </body>
 </html>

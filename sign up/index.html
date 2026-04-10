@@ -69,6 +69,15 @@ p{
 </head>
 
 <body>
+<div id="googleBox" style="display:none; text-align:center; margin-bottom:15px;">
+  <img id="gPhoto" src="" style="width:60px; height:60px; border-radius:50%; margin-bottom:10px;">
+  <h3 id="gName"></h3>
+  <p id="gEmail" style="font-size:12px; color:#94a3b8;"></p>
+
+  <button onclick="continueGoogle()" style="background:#22c55e;">
+    Continue as this user
+  </button>
+</div>
 
 <div class="card">
   <h2>Create Account</h2>
@@ -78,13 +87,43 @@ p{
   <input type="password" id="password" placeholder="Password">
 
   <button onclick="signup()">Sign Up</button>
-
-  <p>Already have an account? <a href="login.html">Login</a></p>
+<button onclick="googleSignIn()" style="background:#fff; color:#000; display:flex; align-items:center; justify-content:center; gap:10px;">
+  <img src="https://cdn-icons-png.flaticon.com/512/281/281764.png" width="18">
+  Continue with Google
+</button>
+  <p>Already have an account? <a href="/sign in/index.html">Login</a></p>
 </div>
 
-<script>
 
-function signup(){
+<script type="module">
+
+// Firebase imports
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyD7DFAUxSfpGWmVegVY38J6khc9o5JE3LA",
+  authDomain: "coastmall-sellers.firebaseapp.com",
+  projectId: "coastmall-sellers",
+  storageBucket: "coastmall-sellers.firebasestorage.app",
+  messagingSenderId: "360613421614",
+  appId: "1:360613421614:web:6912f4a5a131deb1cef5bf",
+  measurementId: "G-TZV64DSXWT"
+};
+
+// Init
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// Email signup
+window.signup = function(){
 
   let name = document.getElementById("name").value;
   let email = document.getElementById("email").value;
@@ -95,30 +134,55 @@ function signup(){
     return;
   }
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
+  createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
 
-  // check if user exists
-  let exists = users.find(u => u.email === email);
+    const user = userCredential.user;
 
-  if(exists){
-    alert("User already exists");
-    return;
-  }
+    updateProfile(user, {
+      displayName: name
+    });
 
-  users.push({
-    name,
-    email,
-    password
+    alert("Account created successfully!");
+    window.location.href = "index.html"; // 🔥 better UX (auto login)
+
+  })
+  .catch((error) => {
+    alert(error.message);
   });
+}
 
-  localStorage.setItem("users", JSON.stringify(users));
+// 🔥 Google Sign-In
+window.googleSignIn = function(){
 
-  alert("Account created successfully!");
+  const provider = new GoogleAuthProvider();
 
-  window.location.href = "login.html";
+  signInWithPopup(auth, provider)
+  .then((result) => {
+
+    const user = result.user;
+
+    // Save user session
+    localStorage.setItem("loggedUser", JSON.stringify({
+      uid: user.uid,
+      name: user.displayName,
+      email: user.email,
+      photo: user.photoURL
+    }));
+
+    alert("Welcome " + user.displayName);
+
+    // 🔥 BYPASS LOGIN PAGE
+    window.location.href = "/profile page/index.html";
+
+  })
+  .catch((error) => {
+    alert(error.message);
+  });
 }
 
 </script>
+
 
 </body>
 </html>

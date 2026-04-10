@@ -412,6 +412,27 @@ if ("serviceWorker" in navigator) {
 }
 
 </script>
+<script type="module">
+
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const auth = getAuth();
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    // Not logged in → go to login
+    window.location.href = "login.html";
+  }
+});
+
+</script>
+<script>
+let user = JSON.parse(localStorage.getItem("loggedUser"));
+
+if(user){
+  console.log("Welcome", user.name);
+}
+</script>
 
 </body>
 </html>
