@@ -327,9 +327,56 @@ body{
     <p id="productCount">0 Listed</p>
   </div>
 </div>
+</div>
 
+<!-- SIGNUP POPUP -->
+<div id="signupPopup" style="
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:280px;
+  background:#111827;
+  color:white;
+  padding:15px;
+  border-radius:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  display:none;
+  z-index:9999;
+">
+
+  <h3 style="margin-bottom:8px;">Join CoastMall 🚀</h3>
+  <p style="font-size:13px; color:#94a3b8;">
+    Create an account to start selling your products.
+  </p>
+
+  <button onclick="goSignup()" style="
+    width:100%;
+    margin-top:10px;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#3b82f6;
+    color:white;
+    cursor:pointer;
+  ">
+    Sign Up Now
+  </button>
+
+  <button onclick="closePopup()" style="
+    width:100%;
+    margin-top:8px;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#1f2937;
+    color:white;
+    cursor:pointer;
+  ">
+    Maybe Later
+  </button>
 
 </div>
+
 
 <script>
 let deferredPrompt = null;
@@ -418,20 +465,50 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 
 const auth = getAuth();
 
+let isLoggedIn = false;
+
+// Check auth state
 onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    // Not logged in → go to login
-    window.location.href = "login.html";
+
+  if(user){
+    isLoggedIn = true;
+    console.log("Logged in:", user.email);
+  } else {
+    isLoggedIn = false;
+
+    // ⏱️ Show popup after 5 seconds
+    setTimeout(() => {
+      if(!isLoggedIn){
+        showSignupPopup();
+      }
+    }, 5000);
+
   }
+
 });
 
 </script>
+
 <script>
 let user = JSON.parse(localStorage.getItem("loggedUser"));
 
 if(user){
   console.log("Welcome", user.name);
 }
+let popupShown = false;
+
+function showSignupPopup(){
+  document.getElementById("signupPopup").style.display = "block";
+}
+
+function closePopup(){
+  document.getElementById("signupPopup").style.display = "none";
+}
+
+function goSignup(){
+  window.location.href = "sign up/index.html";
+}
+
 </script>
 
 </body>
