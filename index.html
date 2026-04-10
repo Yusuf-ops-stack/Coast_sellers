@@ -333,41 +333,39 @@ body{
 
 <script>
 let deferredPrompt = null;
-
 const installBtn = document.getElementById("installBtn");
 
-// Detect install availability
+installBtn.style.display = "none";
+
 window.addEventListener("beforeinstallprompt", (e) => {
+  console.log("INSTALL EVENT FIRED ✔");
+
   e.preventDefault();
   deferredPrompt = e;
 
-  // show button only when install is available
   installBtn.style.display = "block";
 });
 
-// Install click
 installBtn.addEventListener("click", async () => {
   if (!deferredPrompt) {
-    alert("Install not available. Open in Chrome and try again.");
+    alert("App not installable yet. Open in Chrome.");
     return;
   }
 
   deferredPrompt.prompt();
 
-  const choice = await deferredPrompt.userChoice;
+  const result = await deferredPrompt.userChoice;
 
-  if (choice.outcome === "accepted") {
-    console.log("App installed");
-  }
+  console.log(result.outcome);
 
   deferredPrompt = null;
   installBtn.style.display = "none";
 });
 
-// Hide if already installed (optional but nice)
 window.addEventListener("appinstalled", () => {
   installBtn.style.display = "none";
 });
+
 
 function loadDashboardData(){
 
