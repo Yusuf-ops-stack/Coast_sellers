@@ -220,22 +220,23 @@ body{
   </div>
 
 </div>
-<!-- INSTALL TOAST -->
 <div id="installToast" style="
   position:fixed;
   bottom:90px;
   left:50%;
   transform:translateX(-50%);
-  background:#111;
+  background:linear-gradient(135deg,#111,#1f2937);
   color:#fff;
-  padding:12px 16px;
-  border-radius:12px;
+  padding:12px 18px;
+  border-radius:14px;
   font-size:13px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  box-shadow:0 10px 25px rgba(0,0,0,0.25);
   display:none;
   z-index:9999;
+  cursor:pointer;
+  transition:0.3s;
 ">
-  📦 Installing CoastMall Dashboard...
+  📦 Tap to install CoastMall
 </div>
 <!-- TOAST -->
 <div id="appToast" style="
@@ -285,27 +286,48 @@ function showToast(icon, message){
 }
 
 /* FIRST TIME + RETURNING USER */
-function handleUserToast(){
-  const installed = localStorage.getItem("coastmall_installed");
+let deferredPrompt = null;
+const installToast = document.getElementById("installToast");
 
-  if(!installed){
-    // FIRST TIME USER
-    showToast("📦", "Installing CoastMall...");
+/* Listen for install availability */
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault(); // stop auto popup
+  deferredPrompt = e;
 
-    setTimeout(() => {
-      showToast("⚡", "Preparing dashboard...");
-    }, 1200);
+  // Show install toast
+  installToast.style.display = "block";
 
-    setTimeout(() => {
-      showToast("✅", "Installation complete!");
-      localStorage.setItem("coastmall_installed", "true");
-    }, 2500);
+  installToast.innerHTML = "📦 Click here to install CoastMall";
 
+  installToast.style.cursor = "pointer";
+});
+
+/* CLICK TO INSTALL */
+installToast.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+
+  // show install prompt
+  deferredPrompt.prompt();
+
+  const choice = await deferredPrompt.userChoice;
+
+  if (choice.outcome === "accepted") {
+    showToast("✅", "Installing CoastMall...");
+    localStorage.setItem("coastmall_installed", "true");
   } else {
-    // RETURNING USER
-    showToast("👋", "Welcome back to CoastMall!");
+    showToast("❌", "Install cancelled");
   }
-}
+
+  deferredPrompt = null;
+  installToast.style.display = "none";
+});
+
+
+/* OPTIONAL: app installed event */
+window.addEventListener("appinstalled", () => {
+  showToast("🎉", "CoastMall installed successfully!");
+  installToast.style.display = "none";
+});
 
 handleUserToast();
 
