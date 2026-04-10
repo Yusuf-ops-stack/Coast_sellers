@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/styles/general.css">
+  <link rel="stylesheet" href="/styles/general.css">
+  <title>Orders | CoastMall Seller</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+           * {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+    body { font-family: Arial, sans-serif; background: #f5f5f5; padding-bottom: 70px; }
+
+    .container { max-width: 500px; margin: auto; padding: 15px; }
+    h2 { margin-bottom: 15px; color: #333; }
+
+    .order-card {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .order-details { flex: 1; }
+    .order-header { font-weight: bold; font-size: 14px; margin-bottom: 8px; }
+    .order-info { font-size: 12px; color: #555; line-height: 1.6; }
+
+    .order-status {
+      font-size: 12px;
+      font-weight: bold;
+      color: white;
+      background: red;
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 5px;
+      margin-top: 8px;
+    }
+    .order-status.green { background: green; }
+    .order-status.orange { background: orange; }
+    .order-status.blue { background: #0077b6; }
+
+    .status-btn {
+      margin-top: 10px;
+      padding: 6px 10px;
+      font-size: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #0077b6;
+      color: white;
+    }
+    .status-btn:hover { background: #005f8f; }
+
+    .order-image {
+      width: 70px;
+      height: 70px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-left: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .order-image:hover { transform: scale(1.05); }
+
+    /* Fullscreen Image Modal */
+    .image-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      justify-content: center;
+      align-items: center;
+    }
+    .image-modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    }
+    .image-modal span {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 32px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #fff;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+      box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.05);
+      z-index: 999;
+    }
+    .nav-item { text-align: center; flex: 1; color: #555; font-size: 12px; text-decoration: none; cursor: pointer; }
+    .nav-item i { font-size: 18px; }
+    .nav-item p { margin-top: 2px; font-size: 10px; }
+    .nav-item.active i, .nav-item.active p { color: red; font-weight: bold; }
+
+    .home-btn { position: relative; top: -10px; }
+    .home-circle {
+      width: 45px; height: 45px;
+      background: black; color: #fff;
+      border-radius: 50%;
+      margin: auto;
+      display: flex; justify-content: center; align-items: center;
+      font-size: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+      /* Badge */
+    .badge {
+      position: absolute;
+      top: -5px;
+      right: 24%;
+      background: red;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 3px 5px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Orders</h2>
+    <div id="ordersList"></div>
+  </div>
+
+  <!-- Fullscreen Image Modal -->
+  <div id="imageModal" class="image-modal">
+    <span onclick="closeImage()">&times;</span>
+    <img id="modalImage" src="" alt="Product">
+  </div>
+
+ <!-- Bottom Nav -->
+ <nav class="bottom-nav">
+    <a class="nav-item" href="/sellers/home/">
+      <i class="fa-solid fa-shop"></i>
+      <p>Home</p>
+    </a>
+    <a class="nav-item" href="/sellers/messages/">
+      <i class="fa-regular fa-envelope"></i>
+      <p>Messages</p>
+    </a>
+    <a class="nav-item home-btn" href="/sellers/products/">
+      <div class="home-circle">
+        <i class="fa-solid fa-store"></i>
+      </div>
+      <p>My Products</p>
+    </a>
+    <a class="nav-item active" href="/sellers/orders/">
+      <i class="fa-solid fa-bag-shopping"></i>
+      <span class="badge" id="order-count">0</span>
+      <p>Orders</p>
+    </a>
+    <a class="nav-item" href="/sellers/profile/">
+      <i class="fa-solid fa-user"></i>
+      <p>Profile</p>
+    </a>
+  </nav>
+
+<script>
+  const statusFlow = ["To Dispatch", "In Transit", "Delivered", "In Return"];
+
+  async function loadOrders() {
+    const sellerId = localStorage.getItem('coastmall_sellers_id');
+    if (!sellerId) {
+      alert("❌ Seller ID not found. Please login again.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`https://coastmall-api-54fe.vercel.app/sellers/${sellerId}/orders`);
+      if (!res.ok) throw new Error("Failed to fetch orders");
+      const orders = await res.json();
+
+      const orderCountBadge = document.getElementById("order-count");
+      const list = document.getElementById("ordersList");
+
+      orderCountBadge.textContent = orders.length;
+      list.innerHTML = "";
+
+      if (orders.length === 0) {
+        orderCountBadge.style.display='none'
+        list.innerHTML = "<p>No orders yet.</p>";
+        return;
+      }
+
+      orders.forEach(order => {
+        if (!order.status) order.status = "To Dispatch";
+
+        const card = document.createElement("div");
+        card.className = "order-card";
+
+        card.innerHTML = `
+          <div class="order-details">
+            <div class="order-header">Order #${order.id}</div>
+            <div class="order-info">
+              Buyer: ${order.buyerName} 
+            (<a href="tel:${(order.buyerPhone).replace('254','+254')}" title="Call ${(order.buyerPhone).replace('254','+254')}" style="color:blue; text-decoration:none;">
+                <i class="fa fa-phone"></i> ${order.buyerPhone}
+            </a>)<br>
+
+              Username: ${order.username}<br>
+              Address: ${order.buyerAddress}<br>
+              Date: ${order.timestamp ? new Date(order.timestamp).toLocaleDateString() : "-"}<br>
+              Item: ${order.variety}<br>
+              Qty: ${order.quantity}<br>
+              Amount: KSh ${order.productPrice}<br>
+            </div>
+            <div class="order-status ${getStatusClass(order.status)}">${order.status}</div>
+            <button class="status-btn" onclick="updateStatus(${order.id})">Update Status</button>
+          </div>
+          <img src="${order.productImg}" class="order-image" alt="Product Image" onclick="openImage('${order.productImg}')">
+        `;
+
+        list.appendChild(card);
+      });
+    } catch (err) {
+      console.error("❌ Error fetching seller orders:", err.message);
+      document.getElementById("ordersList").innerHTML = "<p>⚠️ Failed to load orders.</p>";
+    }
+  }
+
+  function getStatusClass(status) {
+    switch (status) {
+      case "To Dispatch": return "orange";
+      case "In Transit": return "green";
+      case "Delivered": return "blue";
+      default: return "";
+    }
+  }
+
+  // For now this only updates locally.
+  // You can later connect this to backend with a PUT request.
+  function updateStatus(orderId) {
+    const ordersList = document.querySelectorAll(".order-card");
+    ordersList.forEach(card => {
+      if (card.querySelector(".order-header").textContent.includes(orderId)) {
+        const statusEl = card.querySelector(".order-status");
+        const current = statusEl.textContent;
+        const next = statusFlow[(statusFlow.indexOf(current) + 1) % statusFlow.length];
+        statusEl.textContent = next;
+        statusEl.className = "order-status " + getStatusClass(next);
+      }
+    });
+  }
+
+  // Image Modal Functions
+  function openImage(src) {
+    document.getElementById("modalImage").src = src;
+    document.getElementById("imageModal").style.display = "flex";
+  }
+  function closeImage() {
+    document.getElementById("imageModal").style.display = "none";
+  }
+
+  // Load orders on page load
+  loadOrders();
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Posted Products</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body { margin:0; font-family:'Poppins',sans-serif; background:#f4f6f9; color:#111; padding-bottom:70px; }
+header { background:#0d6efd; color:#fff; padding:15px 20px; text-align:center; }
+.content { padding:20px; }
+.posted-container { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; }
+.product-card { 
+  background:#fff; border-radius:12px; padding:15px; 
+  box-shadow:0 4px 10px rgba(0,0,0,0.1); width:250px; text-align:center; 
+  position:relative; overflow:hidden; transition:0.3s; 
+}
+.product-card img { width:100%; height:150px; object-fit:cover; border-radius:12px; margin-bottom:10px; display:block; }
+.product-card p { margin:5px 0; }
+/* Out of Stock Badge */
+.out-of-stock { 
+  position:absolute; top:10px; left:10px; background:red; color:#fff; 
+  font-size:13px; padding:5px 10px; border-radius:8px; font-weight:700; z-index:100; 
+}
+/* Overlay for Out of Stock products */
+.out-of-stock-card { opacity:0.6; border:2px solid red; }
+/* Dark mode */
+@media (prefers-color-scheme: dark){
+  body { background:#121212; color:#eee; }
+  header { background:#0b5ed7; }
+  .product-card { background:#1e1e1e; box-shadow:0 4px 10px rgba(0,0,0,0.5); }
+}
+button {
+  margin-top:10px;
+  background:#ff4444;
+  color:#fff;
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  width:100%;
+}
+button:hover { opacity:0.9; }
+.restock-btn { background:#4caf50; }
+.restock-btn:hover { opacity:0.9; }
+#filterBtn { width:200px; margin:10px auto; display:block; }
+
+/* Bottom Navigation */
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:black;
+  display:flex;
+  justify-content:space-around;
+  box-shadow:0 -2px 10px rgba(0,0,0,0.1);
+  padding:8px 0;
+}
+
+.nav-item{
+  text-align:center;
+  color:#777;
+  text-decoration:none;
+  font-size:12px;
+  position:relative;
+}
+
+.nav-item i{
+  display:block;
+  font-size:18px;
+  margin-bottom:3px;
+}
+
+.nav-item.active{
+  color:#0d6efd;
+  font-weight:600;
+}
+.back-btn{
+  position:fixed;
+  top:15px;
+  left:15px;
+  width:42px;
+  height:42px;
+  border:none;
+  border-radius:50%;
+  background:#ffffff;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:0.3s ease;
+  z-index:1000;
+}
+
+.back-btn i{
+  font-size:18px;
+  color:#111;
+}
+
+.back-btn:hover{
+  transform:scale(1.08);
+  background:#f1f5f9;
+}
+
+.back-btn:active{
+  transform:scale(0.95);
+}
+</style>
+</head>
+<body>
+<header>
+   <button class="back-btn" onclick="history.back()">
+    <i class="fa-solid fa-arrow-left"></i>
+  </button>
+  <h2>Posted Products</h2>
+  <button id="filterBtn">Show Out-of-Stock Only</button>
+</header>
+<div class="content">
+  <div class="posted-container" id="postedContainer"></div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+  <a href="/profile page/index.html" class="nav-item"><i class="fa-solid fa-user"></i>Profile</a>
+  <a href="/products page/index.html" class="nav-item"><i class="fa-solid fa-box"></i>Products</a>
+   <a href="/homepage/index.html" class="nav-item"><i class="fa-solid fa-home"></i>Home</a>
+  <a href="/upload page/index.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Upload</a>
+  <a href="/orders page/index.html" class="nav-item"><i class="fa-solid fa-cart-shopping"></i>Orders</a>
+  <a href="/messages page/index.html" class="nav-item active"><i class="fa-solid fa-comments"></i>Messages<span class="badge" id="msgBadge">0</span></a>
+</div>
+<script>
+const postedContainer = document.getElementById('postedContainer');
+const filterBtn = document.getElementById('filterBtn');
+let postedProducts = JSON.parse(localStorage.getItem('postedProducts')) || [];
+let showOutOfStockOnly = false;
+
+// Toggle filter button
+filterBtn.addEventListener('click', () => {
+  showOutOfStockOnly = !showOutOfStockOnly;
+  filterBtn.textContent = showOutOfStockOnly ? 'Show All Products' : 'Show Out-of-Stock Only';
+  displayPostedProducts();
+});
+
+function displayPostedProducts() {
+  postedContainer.innerHTML = '';
+
+  postedProducts.forEach((product) => {
+    if(showOutOfStockOnly && product.quantity > 0) return;
+
+    const card = document.createElement('div');
+    card.classList.add('product-card');
+
+    if(product.quantity <= 0){
+      card.classList.add('out-of-stock-card');
+      const badge = document.createElement('div');
+      badge.classList.add('out-of-stock');
+      badge.textContent = 'OUT OF STOCK';
+      card.appendChild(badge);
+    }
+
+    const img = document.createElement('img');
+    img.src = product.image || '';
+    img.alt = 'Product Image';
+    card.appendChild(img);
+
+    ['name','newPrice','discount','timePosted','quantity'].forEach(field => {
+      if(product[field] !== undefined){
+        const p = document.createElement('p');
+        if(field === 'name') p.textContent = `NAME: ${product.name}`;
+        if(field === 'newPrice') p.textContent = `PRICE: KES ${product.newPrice}`;
+        if(field === 'discount') p.textContent = `DISCOUNT: ${product.discount}% OFF`;
+        if(field === 'timePosted') p.textContent = `TIME POSTED: ${product.timePosted}`;
+        if(field === 'quantity') p.textContent = `QUANTITY: ${product.quantity}`;
+        card.appendChild(p);
+      }
+    });
+
+    if(product.quantity > 0){
+      const outOfStockBtn = document.createElement('button');
+      outOfStockBtn.textContent = 'Mark as Out of Stock';
+      outOfStockBtn.addEventListener('click', () => {
+        product.quantity = 0;
+        localStorage.setItem('postedProducts', JSON.stringify(postedProducts));
+        displayPostedProducts();
+      });
+      card.appendChild(outOfStockBtn);
+    } else {
+      const restockBtn = document.createElement('button');
+      restockBtn.textContent = 'Restock Product';
+      restockBtn.classList.add('restock-btn');
+      restockBtn.addEventListener('click', () => {
+        const qty = parseInt(prompt('Enter new quantity:', '1'));
+        if(!isNaN(qty) && qty > 0){
+          product.quantity = qty;
+          localStorage.setItem('postedProducts', JSON.stringify(postedProducts));
+          displayPostedProducts();
+        }
+      });
+      card.appendChild(restockBtn);
+    }
+
+    postedContainer.appendChild(card);
+  });
+}
+
+displayPostedProducts();
+</script>
+</body>
+</html>

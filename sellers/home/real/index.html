@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/styles/general.css">
+  <link rel="stylesheet" href="/styles/general.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/styles/loader.css">
+  <script src="/scripts/loader.js"></script>
+  <title>Seller Dashboard | Coastmall</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      padding: 0;
+      margin: 0;
+    }
+    .dashboard {
+      max-width: 500px;
+      margin: auto;
+      margin-top: 60px;
+      padding: 8px;
+    }
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 15px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo {
+      width: 100px;
+      height: 100px;
+      background: #eee;
+      border-radius: 20px;
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+    }
+    .store-info {
+      flex: 1;
+    }
+    .store-info h2 {
+      font-size: 16px;
+    }
+    .store-info p {
+      font-size: 12px;
+      color: #777;
+    }
+    .stats-row, .order-row, .performance, .product-row, .alerts-row, .activity-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+    .stats-row div, .order-row div, .product-row div, .alerts-row div, .activity-row div {
+      flex: 1;
+      text-align: center;
+    }
+    .stats-row div:not(:last-child), .product-row div:not(:last-child) {
+      border-right: 1px solid #eee;
+    }
+    .stats-label, .alert-label {
+      font-size: 12px;
+      color: #888;
+    }
+    .stats-value, .alert-value {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 5px 0;
+    }
+    .add-btn {
+      margin-top: 10px;
+      display: block;
+      width: 100%;
+      text-decoration: none;
+      padding: 10px;
+      background: #ffe5e5;
+      text-align: center;
+      color: red;
+      border-radius: 6px;
+      font-weight: bold;
+      border: red 1px dotted;
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #fff;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+      box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.05);
+      z-index: 999;
+    }
+    .nav-item {
+      text-align: center;
+      flex: 1;
+      color: #555;
+      font-size: 12px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .nav-item.active{
+     color: red;
+    }
+    .nav-item i {
+      font-size: 18px;
+    }
+    .nav-item p {
+      margin-top: 2px;
+      font-size: 10px;
+    }
+    .home-btn {
+      position: relative;
+      top: -10px;
+    }
+    .home-circle {
+      width: 45px;
+      height: 45px;
+      background: black;
+      color: #fff;
+      border-radius: 50%;
+      margin: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .logo img {
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      object-fit: cover;
+    }
+    .profile-pic {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 1px solid blue;
+      object-fit: cover;
+    }
+    .camera-overlay {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: black;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .camera-overlay i {
+      color: white;
+      font-size: 14px;
+    }
+    .camera-overlay:hover {
+      background: rgba(0,0,0,0.8);
+    }
+    
+    .top-header{
+      background-color: darkblue;
+      padding: 15px;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+
+    }
+    
+.sidy{
+  overflow: scroll;
+  height: 500px;
+}
+.header-icons {
+  font-size: 15px;
+  cursor: pointer;
+  padding: 7px;
+  height: 30px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: rgba(280, 280, 280, 0.2);
+  color: white;
+}
+     /* Badge */
+    .badge {
+      position: absolute;
+      top: -5px;
+      right: 24%;
+      background: red;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      display: none;
+      padding: 3px 5px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;" class="top-header">
+    <div class="header-icons" onclick="Home()" title="Coastmall dashboard">
+     🛒
+    </div>
+  <select id="accountType" style="padding: 6px 10px; font-size: 13px; border-radius: 6px; border: 1px solid #ccc;">
+    <option value="real">🟢 Real Account</option>
+    <option value="demo"> Switch to Demo Account </option>
+  </select>
+</div>
+  <div class="dashboard">
+
+    <div class="card header">
+      <div class="logo" onclick="profile()">
+        <img src="/img/no-dp2.jpg" alt="Profile Picture" id="profilePic">
+        <input id="imageInput" type="file" accept="image/*" style="display: none;" />
+      </div>
+      <div class="store-info">
+        <h2 id="storeName"></h2><br>
+        <p>Store ID: <span id="store"></span><br><br>Followers: 0</p>
+      </div>
+    </div>
+
+     <button class="add-btn" onclick="showCategoryModal()">+ Add Product</button><br>
+
+    <div class="card">
+      <strong>Business Overview</strong>
+      <div class="stats-row">
+        <div>
+          <div class="stats-value" style="color: red;">KSh 0.0</div>
+          <div class="stats-label">Gross Revenue</div>
+        </div>
+        <div>
+          <div class="stats-value">0</div>
+          <div class="stats-label">Paid Orders</div>
+        </div>
+        <div>
+          <div class="stats-value">1</div>
+          <div class="stats-label">Visitors</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>Order (Jan 13, 2025)</strong>
+      <div class="order-row">
+        <div><strong>0</strong><br><br>To Pay</div>
+        <div><strong style="color:red">0</strong><br><br>To Dispatch</div>
+        <div><strong>0</strong><br><br>In Transit</div>
+        <div><strong style="color:red">0</strong><br><br>In Return</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>Performance <span style="color: green;">Good</span></strong>
+      <div class="performance">
+        <div>Sales Performance<br><a href="#">1 metric failed</a></div>
+        <div>Service Performance<br><a href="#">1 metric failed</a></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>Product</strong>
+      <div class="product-row">
+        <div><strong>0</strong><br>Active</div>
+        <div><strong>0</strong><br>Inactive</div>
+        <div><strong style="color:red">0</strong><br>QC Reject</div>
+        <div><strong>0</strong><br>QC Locked</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>Inventory Alerts</strong>
+      <div class="alerts-row">
+        <div>
+          <div class="alert-value" style="color: orange;">3</div>
+          <div class="alert-label">Low Stock</div>
+        </div>
+        <div>
+          <div class="alert-value" style="color: red;">2</div>
+          <div class="alert-label">Out of Stock</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>Recent Activity</strong>
+      <div class="activity-row">
+        <div>
+          <div class="alert-value">0</div>
+          <div class="alert-label">New Messages</div>
+        </div>
+        <div>
+          <div class="alert-value">0</div>
+          <div class="alert-label">Reviews</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a class="nav-item active" href="/sellers/home/" onclick="load()">
+      <i class="fa-solid fa-shop"></i>
+      <p>Home</p>
+    </a>
+    <a class="nav-item" href="/sellers/messages/" onclick="load()">
+      <i class="fa-regular fa-envelope"></i>
+      <p>Messages</p>
+    </a>
+    <a class="nav-item home-btn" href="/sellers/products/" onclick="load()">
+      <div class="home-circle">
+        <i class="fa-solid fa-store"></i>
+      </div>
+      <p>My Products</p>
+    </a>
+    <a class="nav-item" href="/sellers/orders/" onclick="load()">
+      <i class="fa-solid fa-bag-shopping"></i>
+      <span class="badge" id="order-count">0</span>
+      <p>Orders</p>
+    </a>
+    <a class="nav-item" href="/sellers/profile/" onclick="load()">
+      <i class="fa-solid fa-user"></i>
+      <p>Profile</p>
+    </a>
+  </nav>
+
+  <div id="categoryModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+  <div style="background: white; padding: 20px; border-radius: 10px; max-width: 300px; width: 90%; text-align: center;">
+    <h3>Select Product Category</h3>
+    <select id="productCategory" style="margin-top: 10px; padding: 8px; width: 100%;">
+      <option value="">-- Select Category --</option>
+  <option value="food">Food & Meals</option>
+  <option value="fashion">Fashion</option>
+  <option value="electronics">Electronics</option>
+  <option value="beauty">Beauty</option>
+    </select>
+    <br><br>
+    <button onclick="confirmCategory()" style="padding: 8px 20px; background-color: burlywood; border: none; border-radius: 6px; color: darkblue; font-weight: bold;">Proceed</button>
+    <br><br>
+    <button onclick="closeCategoryModal()" style="background: none; color: red; border: none; text-decoration: underline;">Cancel</button>
+  </div>
+</div>
+
+          <!-- Stick Spinner Loader -->
+          <div class="loader-holder">
+            <div class="loader" id="loader">
+              <div class="stick"></div>
+              <div class="stick"></div>
+              <div class="stick"></div>
+              <div class="stick"></div>
+              <div class="stick"></div>
+              <div class="stick"></div>
+              <div class="stick"></div>
+              <div class="stick"></div>
+      
+            </div>
+          </div>
+
+   <!-- Overlay -->
+<div class="overlay" id="overlay">
+</div> 
+
+<script>
+const profilePic = document.getElementById('profilePic');
+const sellerId = localStorage.getItem('coastmall_sellers_id')
+
+function profile(){
+  window.location.assign('/sellers/profile')
+}
+// ✅ Step 1: Try fetching seller details from API
+async function fetchSellerDetails() {;
+  if (!sellerId) {
+    fallbackToLocal();
+    return;
+  }
+
+  try {
+    const orderCountBadge = document.getElementById("order-count");
+    const res = await fetch(`https://coastmall-api-54fe.vercel.app/seller-profile/${sellerId}`);
+    const data = await res.json();
+    if (data.success) {
+       const storeName = data.seller.storeName
+       const orders = data.seller.orders
+       if(orders){
+        orderCountBadge.style.display='flex'
+        orderCountBadge.textContent=Object.keys(orders).length
+       }
+       localStorage.setItem('storename',storeName);
+       localStorage.setItem('storeLogo',data.seller.storeLogo||'/img/no-dp2.jpg')
+       const formattedName = storeName.charAt(0).toUpperCase() + storeName.slice(1).toLowerCase();
+       document.getElementById('storeName').innerHTML = `${formattedName} Stores`;
+      if (data.seller.profileImage) profilePic.src = data.seller.profileImage;
+      return;
+    }else{
+      alert('You have been signed Out !')
+      localStorage.removeItem('coastmall_sellers_id');
+      localStorage.removeItem('storename');
+      localStorage.removeItem('storeLogo');
+      window.location.assign('/sellers/login');
+    }
+  } catch (e) {
+    console.log("Fallback to local:", e.message);
+  }
+
+}
+
+// ✅ Step 2: Fallback to local storage for demo
+function fallbackToLocal() {
+  const storeName = localStorage.getItem('storename') || 'Seller';
+  const formattedName = storeName.charAt(0).toUpperCase() + storeName.slice(1).toLowerCase();
+  document.getElementById('storeName').innerHTML = `${formattedName} Stores`;
+   document.getElementById('store').innerHTML = sellerId;
+  const storedImg = localStorage.getItem('storeLogo');
+  if (storedImg) profilePic.src = storedImg;
+  fetchSellerDetails()
+}
+
+// ✅ Step 4: Navigation Active Highlight
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+
+// ✅ Step 5: Handle Account Switch
+const accountSelect = document.getElementById('accountType');
+const savedAccount = localStorage.getItem('sellerMode');
+if (savedAccount) accountSelect.value = savedAccount;
+accountSelect.addEventListener('change', () => {
+  const selected = accountSelect.value;
+  if(confirm(`Switch to ${selected === 'real' ? '🟢 Real Account?' : '🟠 Demo Account?'}`)){
+  localStorage.setItem('sellerMode', selected);
+
+  
+
+  // Redirect or refresh based on selection
+  if (selected === 'real') {
+   window.location.assign('/sellers/home/real');
+  } else {
+   window.location.assign('/sellers/home/demo');
+  }
+}else{
+  accountSelect.value ='real'
+}
+});
+fallbackToLocal();
+function Home(){
+  window.location.assign('/')
+}
+if (!localStorage.getItem('coastmall_sellers_id')) {
+    window.location.assign('/sellers/home');
+}
+//localStorage.clear();
+</script>
+
+   <script>
+  function showCategoryModal() {
+    document.getElementById("categoryModal").style.display = "flex";
+  }
+
+  function closeCategoryModal() {
+    document.getElementById("categoryModal").style.display = "none";
+  }
+
+  function confirmCategory() {
+    const category = document.getElementById("productCategory").value;
+    if (!category) {
+      alert("Please select a product category.");
+      return;
+    }
+
+    // Optionally store it in localStorage or pass via URL
+    localStorage.setItem("selectedProductCategory", category);
+
+    // Redirect with category in query string
+    window.location.href = `/sellers/upload/index.html?category=${category}`;
+  }
+</script>
+</body>
+</html>

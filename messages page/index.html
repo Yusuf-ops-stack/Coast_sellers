@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoastMall Seller Chat</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body {
+  font-family:'Poppins',sans-serif;
+  margin:0; padding-bottom:70px;
+  background:#f4f6f8; color:#333;
+  transition: background 0.3s,color 0.3s;
+}
+header {
+  background:#0056d2; color:#fff; padding:15px 20px;
+  text-align:center; font-size:1.5rem; font-weight:600;
+  position: sticky; top:0; z-index:10; box-shadow:0 2px 10px rgba(0,0,0,0.1);
+  display:flex; justify-content:space-between; align-items:center;
+}
+header .menu-btn {
+  display:none; font-size:1.5rem; cursor:pointer;
+}
+.chat-wrapper {
+  display:flex; height:calc(100vh - 70px); overflow:hidden;
+}
+.chat-list {
+  width:30%; min-width:200px; border-right:1px solid #ddd; overflow-y:auto; background:#fff;
+  transition: background 0.3s;
+}
+.chat-list-item {
+  padding:15px; cursor:pointer; border-bottom:1px solid #eee;
+  display:flex; justify-content:space-between; align-items:center; transition: background 0.2s;
+}
+.chat-list-item:hover { background:#f0f0f0; }
+.chat-list-item.active { background:#0d6efd; color:#fff; font-weight:600; }
+.chat-list-item .name { font-weight:500; }
+.chat-list-item .badge { background:red; color:#fff; font-size:0.7rem; padding:2px 6px; border-radius:50%; font-weight:600; }
+
+.chat-area { flex:1; display:flex; flex-direction:column; background:#f9f9f9; transition: background 0.3s; }
+.messages { flex:1; padding:15px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;}
+.message { max-width:70%; padding:10px 15px; border-radius:20px; word-wrap:break-word; font-size:0.95rem; line-height:1.4; position:relative;}
+.message.seller { background:#0d6efd; color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
+.message.buyer { background:#e4e6eb; color:#333; align-self:flex-start; border-bottom-left-radius:4px; }
+.timestamp { font-size:0.7rem; color:rgba(255,255,255,0.7); margin-top:3px; text-align:right; }
+.message.buyer .timestamp { color:#555; }
+.typing { font-size:0.9rem; color:#555; font-style:italic; margin:5px 0;}
+.input-container { display:flex; padding:10px; gap:10px; background:#fff; box-shadow:0 -2px 10px rgba(0,0,0,0.05);}
+.input-container input { flex:1; padding:10px 15px; border-radius:20px; border:1px solid #ccc; outline:none; font-size:1rem; }
+.input-container button { background:#0d6efd; border:none; color:#fff; padding:10px 18px; border-radius:50%; font-size:1.1rem; cursor:pointer; transition:background 0.3s;}
+.input-container button:hover { background:#0056d2; }
+
+.bottom-nav { position: fixed; bottom:0; width:100%; background:#fff; display:flex; justify-content:space-around; align-items:center; padding:8px 0; box-shadow:0 -2px 12px rgba(0,0,0,0.1); z-index:10;}
+.nav-item { text-align:center; color:#777; text-decoration:none; font-size:12px; position:relative; display:flex; flex-direction:column; align-items:center; transition: color 0.3s, transform 0.2s;}
+.nav-item i { display:block; font-size:18px; margin-bottom:3px;}
+.nav-item.active { color:#0d6efd; font-weight:600;}
+.nav-item:hover { color:#0d6efd; transform:translateY(-3px);}
+.nav-item:hover i { transform:scale(1.2);}
+.nav-item .badge { position:absolute; top:0px; right:-5px; background:red; color:#fff; font-size:0.65rem; padding:2px 5px; border-radius:50%; font-weight:600; }
+
+/* Mobile adjustments */
+@media (max-width:768px){
+  .chat-wrapper { flex-direction:column; }
+  .chat-list { width:100%; max-height:200px; display:none; position:absolute; top:70px; left:0; bottom:0; z-index:20; box-shadow:2px 0 10px rgba(0,0,0,0.2);}
+  .chat-list.active { display:block; }
+  .chat-area { flex:1; }
+  header .menu-btn { display:block; }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark){
+  body { background:#121212; color:#ddd;}
+  header { background:#0b3d91; color:#fff;}
+  .chat-list { background:#1e1e1e; border-right:1px solid #333;}
+  .chat-list-item:hover { background:#2a2a2a;}
+  .chat-list-item.active { background:#4ea1ff; color:#fff;}
+  .chat-area { background:#121212;}
+  .message.buyer { background:#1e1e1e; color:#ddd;}
+  .message.seller { background:#4ea1ff; color:#fff;}
+  .input-container { background:#1e1e1e;}
+  .input-container input { background:#2a2a2a; color:#ddd; border:1px solid #555;}
+  .bottom-nav { background:#1e1e1e;}
+  .nav-item { color:#aaa;}
+  .nav-item.active,.nav-item:hover { color:#4ea1ff;}
+}
+</style>
+</head>
+<body>
+<header>
+  <span>CoastMall Seller Chat</span>
+  <i class="fa-solid fa-bars menu-btn" id="menuBtn"></i>
+</header>
+
+<div class="chat-wrapper">
+  <div class="chat-list" id="chatList"></div>
+  <div class="chat-area">
+    <div class="messages" id="messages"></div>
+    <div class="typing" id="typingIndicator" style="display:none;">Buyer is typing...</div>
+    <div class="input-container">
+      <input type="text" id="messageInput" placeholder="Type a message...">
+      <button id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="/profile page/index.html" class="nav-item"><i class="fa-solid fa-user"></i>Profile</a>
+  <a href="/products page/index.html" class="nav-item"><i class="fa-solid fa-box"></i>Products</a>
+  <a href="/homepage/index.html" class="nav-item"><i class="fa-solid fa-home"></i>Home</a>
+  <a href="/upload page/index.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Upload</a>
+  <a href="/orders page/index.html" class="nav-item"><i class="fa-solid fa-cart-shopping"></i>Orders</a>
+  <a href="/messages page/index.html" class="nav-item active"><i class="fa-solid fa-comments"></i>Messages<span class="badge" id="msgBadge">0</span></a>
+</div>
+
+<script>
+const chatListEl = document.getElementById('chatList');
+const messagesEl = document.getElementById('messages');
+const messageInput = document.getElementById('messageInput');
+const sendBtn = document.getElementById('sendBtn');
+const typingIndicator = document.getElementById('typingIndicator');
+const msgBadge = document.getElementById('msgBadge');
+const menuBtn = document.getElementById('menuBtn');
+
+let chats = JSON.parse(localStorage.getItem('chats')) || {
+  'John Doe': [{sender:'buyer',text:'Hi! Is the bag available?',time:'15:30',read:false}],
+  'Jane Smith': [{sender:'buyer',text:'Do you ship to Nairobi?',time:'11:15',read:false}]
+};
+let currentChat = Object.keys(chats)[0];
+
+function renderChatList(){
+  chatListEl.innerHTML='';
+  Object.keys(chats).forEach(name=>{
+    const div = document.createElement('div');
+    div.classList.add('chat-list-item');
+    if(name===currentChat) div.classList.add('active');
+    const unreadCount = chats[name].filter(m=>m.sender==='buyer' && !m.read).length;
+    div.innerHTML = `<span class="name">${name}</span><span class="badge">${unreadCount>0?unreadCount:''}</span>`;
+    div.onclick=()=>{
+      currentChat=name;
+      chats[name].forEach(m=>m.read=true);
+      renderMessages();
+      renderChatList();
+      if(window.innerWidth <= 768) chatListEl.classList.remove('active');
+    }
+    chatListEl.appendChild(div);
+  });
+}
+
+function renderMessages(){
+  messagesEl.innerHTML='';
+  chats[currentChat].forEach(m=>{
+    const div=document.createElement('div');
+    div.classList.add('message', m.sender);
+    div.innerHTML=`${m.text}<div class="timestamp">${m.time}</div>`;
+    messagesEl.appendChild(div);
+  });
+  messagesEl.scrollTop=messagesEl.scrollHeight;
+  updateBadge();
+}
+
+function updateBadge(){
+  let total=0;
+  Object.values(chats).forEach(messages=>{
+    total+=messages.filter(m=>m.sender==='buyer' && !m.read).length;
+  });
+  msgBadge.textContent = total || 0;
+}
+
+function addMessage(sender,text){
+  const now=new Date();
+  const time = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  chats[currentChat].push({sender,text,time,read: sender==='seller'});
+  localStorage.setItem('chats',JSON.stringify(chats));
+  renderMessages();
+}
+
+sendBtn.addEventListener('click', ()=>{
+  const text = messageInput.value.trim();
+  if(!text) return;
+  addMessage('seller',text);
+  messageInput.value='';
+  typingIndicator.style.display='block';
+  setTimeout(()=>{
+    const replies=['Thanks!','Will buy soon.','Okay, noted.'];
+    const reply = replies[Math.floor(Math.random()*replies.length)];
+    chats[currentChat].push({sender:'buyer',text:reply,time:new Date().getHours().toString().padStart(2,'0')+':'+new Date().getMinutes().toString().padStart(2,'0'),read:false});
+    localStorage.setItem('chats',JSON.stringify(chats));
+    renderMessages();
+    typingIndicator.style.display='none';
+    renderChatList();
+  },1000);
+});
+
+messageInput.addEventListener('keypress',(e)=>{
+  if(e.key==='Enter') sendBtn.click();
+});
+
+// Toggle chat list on mobile
+menuBtn.addEventListener('click', ()=>{
+  chatListEl.classList.toggle('active');
+});
+
+renderChatList();
+renderMessages();
+</script>
+</body>
+</html>

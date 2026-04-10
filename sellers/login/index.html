@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/styles/general.css">
+  <link rel="stylesheet" href="/styles/general.css">
+<title>Seller Login | Coastmall</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    min-height: 85vh;
+    padding: 20px;
+  }
+      * {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+  .container {
+    max-width: 400px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  input {
+    width: 95%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  button {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #0069d9;
+  }
+  .info {
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+    color: #555;
+  }
+  .info a{
+    text-decoration: dotted;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Seller Login</h2>
+  <h3>Welcome back !</h3>
+  <form id="loginForm">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" required placeholder="Enter your Email">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" required placeholder="Enter Password">
+    </div>
+
+    <button type="submit" id="loginBtn">Login</button>
+  </form>
+  <div class="info">Not yet registered? <a href="/sellers/register/">Create seller Account.</a></div>
+</div>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  const loginBtn = document.getElementById('loginBtn');
+  loginBtn.disabled = true;
+  loginBtn.innerText = "Logging in...";
+
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  try {
+    const response = await fetch('https://coastmall-api-54fe.vercel.app/seller-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert('✅ Login Successful, Welcome back!');
+      localStorage.setItem('coastmall_seller_uid', result.uid);
+      localStorage.setItem('coastmall_sellers_id', result.sellerId);
+       localStorage.setItem('storeLogo', result.storeLogo||'/img/no-dp2.jpg')
+      localStorage.setItem('storename',result.storeName)
+      window.location.href = '/sellers/home';
+    } else {
+      alert('❌ ' + result.message);
+    }
+
+  } catch (err) {
+    alert('❌ Network Error: ' + err.message);
+  }
+
+  loginBtn.disabled = false;
+  loginBtn.innerText = "Login";
+});
+</script>
+
+</body>
+</html>

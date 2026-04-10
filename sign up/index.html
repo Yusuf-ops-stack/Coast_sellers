@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoastMall Seller Register</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#4facfe,#0d6efd);
+      height:100vh; display:flex; align-items:center; justify-content:center;}
+    .container{width:100%; max-width:400px; background:white; padding:30px; border-radius:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.2); text-align:center; animation:fadeIn 0.6s ease;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)}}
+    .logo{font-size:22px;font-weight:600;color:#0d6efd;}
+    .subtitle{font-size:14px;color:#777;margin-bottom:20px;}
+    input{width:100%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #ddd; font-size:14px;}
+    .password-box{position:relative;}
+    .password-box i{position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; color:#777;}
+    .btn{width:100%; padding:12px; border:none; border-radius:8px; background:#0d6efd; color:white;
+      font-size:15px; cursor:pointer; margin-top:10px;}
+    .btn:hover{background:#0b5ed7;}
+    .links{margin-top:15px; font-size:13px;}
+    .links a{color:#0d6efd; text-decoration:none;}
+    .error{color:red; font-size:12px; display:none;}
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="logo">CoastMall</div>
+  <div class="subtitle">Create Seller Account</div>
+
+  <form onsubmit="return validateForm()">
+    <input type="text" id="fullName" placeholder="Full Name" required>
+    <input type="email" id="email" placeholder="Email Address" required>
+
+    <div class="password-box">
+      <input type="password" id="password" placeholder="Password" required>
+      <i class="fa-solid fa-eye" onclick="togglePassword('password', this)"></i>
+    </div>
+
+    <div class="password-box">
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+      <i class="fa-solid fa-eye" onclick="togglePassword('confirmPassword', this)"></i>
+    </div>
+
+    <div id="errorMsg" class="error">Passwords do not match</div>
+
+    <button class="btn">Register</button>
+  </form>
+
+  <div class="links">
+    Already have an account? <a href="/sign in/index.html">Login</a>
+  </div>
+</div>
+
+<script>
+function togglePassword(id, icon){
+  const input = document.getElementById(id);
+  if(input.type === "password"){
+    input.type = "text";
+    icon.classList.replace("fa-eye","fa-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.replace("fa-eye-slash","fa-eye");
+  }
+}
+
+function validateForm(){
+  const fullName = document.getElementById("fullName").value;
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+  const confirm = document.getElementById("confirmPassword").value;
+  const error = document.getElementById("errorMsg");
+
+  if(pass !== confirm){
+    error.style.display = "block";
+    return false;
+  }
+
+  error.style.display = "none";
+
+  // Save user data to localStorage
+  const sellerData = { fullName, email, password: pass };
+  localStorage.setItem("sellerData", JSON.stringify(sellerData));
+
+  // Redirect to login page
+  window.location.href = "/sign in/index.html";
+  return false;
+}
+</script>
+
+</body>
+</html>

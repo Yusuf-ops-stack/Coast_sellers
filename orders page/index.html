@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoastMall Seller Orders</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* Base Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding-bottom: 70px; /* space for bottom nav */
+      background: #f4f6f8;
+      color: #333;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      background: #0056d2;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .filters {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .filters select {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+      transition: background 0.3s, color 0.3s, border 0.3s;
+    }
+
+    .orders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .order-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      transition: transform 0.2s, box-shadow 0.2s, background 0.3s, color 0.3s;
+    }
+
+    .order-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    .order-card h3 {
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+      color: #0056d2;
+      transition: color 0.3s;
+    }
+
+    .order-info {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #555;
+      transition: color 0.3s;
+    }
+
+    .order-info span {
+      font-weight: 600;
+    }
+
+    .status-btn {
+      margin-top: 12px;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+      transition: background 0.3s;
+    }
+
+    .pending { background: #ff9800; }
+    .shipped { background: #2196f3; }
+    .delivered { background: #4caf50; }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 8px 0;
+      box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .nav-item {
+      text-align: center;
+      color: #777;
+      text-decoration: none;
+      font-size: 12px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: color 0.3s, transform 0.2s;
+    }
+
+    .nav-item i {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 3px;
+      transition: transform 0.2s;
+    }
+
+    .nav-item.active {
+      color: #0d6efd;
+      font-weight: 600;
+    }
+
+    .nav-item:hover {
+      color: #0d6efd;
+      transform: translateY(-3px);
+    }
+
+    .nav-item:hover i {
+      transform: scale(1.2);
+    }
+
+    .nav-item .badge {
+      position: absolute;
+      top: 0px;
+      right: -5px;
+      background: red;
+      color: #fff;
+      font-size: 0.65rem;
+      padding: 2px 5px;
+      border-radius: 50%;
+      font-weight: 600;
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      header { font-size: 1.2rem; }
+      .order-card { padding: 15px; }
+      .bottom-nav .nav-item i { font-size: 1rem; }
+    }
+
+    /* Dark Theme */
+    @media (prefers-color-scheme: dark) {
+      body { background: #121212; color: #ddd; }
+      header { background: #0b3d91; color: #fff; }
+      .order-card { background: #1e1e1e; color: #ddd; }
+      .order-card h3 { color: #4ea1ff; }
+      .order-info { color: #ccc; }
+      .filters select { background: #1e1e1e; color: #ddd; border: 1px solid #555; }
+      .bottom-nav { background: #1e1e1e; }
+      .nav-item { color: #aaa; }
+      .nav-item.active, .nav-item:hover { color: #4ea1ff; }
+    }
+    .back-btn{
+  position:fixed;
+  top:15px;
+  left:15px;
+  width:42px;
+  height:42px;
+  border:none;
+  border-radius:50%;
+  background:#ffffff;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:0.3s ease;
+  z-index:1000;
+}
+
+.back-btn i{
+  font-size:18px;
+  color:#111;
+}
+
+.back-btn:hover{
+  transform:scale(1.08);
+  background:#f1f5f9;
+}
+
+.back-btn:active{
+  transform:scale(0.95);
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <button class="back-btn" onclick="history.back()">
+    <i class="fa-solid fa-arrow-left"></i>
+  </button>
+  CoastMall Seller Orders
+</header>
+
+<div class="container">
+  <div class="filters">
+    <select id="statusFilter">
+      <option value="all">All Orders</option>
+      <option value="pending">Pending</option>
+      <option value="shipped">Shipped</option>
+      <option value="delivered">Delivered</option>
+    </select>
+  </div>
+
+  <div class="orders-grid" id="ordersGrid">
+    <!-- Orders will be injected here -->
+  </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+  <a href="/profile page/index.html" class="nav-item"><i class="fa-solid fa-user"></i>Profile</a>
+  <a href="/products page/index.html" class="nav-item"><i class="fa-solid fa-box"></i>Products</a>
+   <a href="/homepage/index.html" class="nav-item"><i class="fa-solid fa-home"></i>Home</a>
+  <a href="/upload page/index.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Upload</a>
+  <a href="/orders page/index.html" class="nav-item"><i class="fa-solid fa-cart-shopping"></i>Orders</a>
+  <a href="/messages page/index.html" class="nav-item active"><i class="fa-solid fa-comments"></i>Messages<span class="badge" id="msgBadge">0</span></a>
+</div>
+
+<script>
+  // Initialize sample orders in localStorage if not exist
+  if(!localStorage.getItem('orders')) {
+    const sampleOrders = [
+      {id: 'ORD001', buyer: 'John Doe', product: 'Leather Bag', qty: 2, price: 1200, status: 'pending', date: '2026-04-07 15:30'},
+      {id: 'ORD002', buyer: 'Jane Smith', product: 'Sneakers', qty: 1, price: 4500, status: 'shipped', date: '2026-04-06 11:15'},
+      {id: 'ORD003', buyer: 'Mike Brown', product: 'Wrist Watch', qty: 1, price: 8000, status: 'delivered', date: '2026-04-05 09:50'}
+    ];
+    localStorage.setItem('orders', JSON.stringify(sampleOrders));
+  }
+
+  const ordersGrid = document.getElementById('ordersGrid');
+  const statusFilter = document.getElementById('statusFilter');
+
+  function renderOrders(filter = 'all') {
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    ordersGrid.innerHTML = '';
+
+    const filtered = filter === 'all' ? orders : orders.filter(o => o.status === filter);
+
+    if(filtered.length === 0) {
+      ordersGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#777;">No orders found.</p>';
+      return;
+    }
+
+    filtered.forEach(order => {
+      const card = document.createElement('div');
+      card.classList.add('order-card');
+
+      card.innerHTML = `
+        <h3>${order.product}</h3>
+        <div class="order-info">
+          <p><span>Order ID:</span> ${order.id}</p>
+          <p><span>Buyer:</span> ${order.buyer}</p>
+          <p><span>Quantity:</span> ${order.qty}</p>
+          <p><span>Price:</span> KES ${order.price}</p>
+          <p><span>Order Date:</span> ${order.date}</p>
+          <p><span>Status:</span> <span class="status-text">${order.status}</span></p>
+        </div>
+        ${order.status !== 'delivered' ? `<button class="status-btn ${order.status}" onclick="updateStatus('${order.id}')">${order.status === 'pending' ? 'Mark Shipped' : 'Mark Delivered'}</button>` : ''}
+      `;
+
+      ordersGrid.appendChild(card);
+    });
+  }
+
+  function updateStatus(orderId) {
+    const orders = JSON.parse(localStorage.getItem('orders'));
+    const index = orders.findIndex(o => o.id === orderId);
+
+    if(index !== -1) {
+      if(orders[index].status === 'pending') orders[index].status = 'shipped';
+      else if(orders[index].status === 'shipped') orders[index].status = 'delivered';
+
+      localStorage.setItem('orders', JSON.stringify(orders));
+      renderOrders(statusFilter.value);
+    }
+  }
+
+  statusFilter.addEventListener('change', () => {
+    renderOrders(statusFilter.value);
+  });
+
+  renderOrders();
+</script>
+
+</body>
+</html>

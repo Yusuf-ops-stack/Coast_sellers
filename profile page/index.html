@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seller Profile</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Poppins',sans-serif;background:#f4f6f9;color:#111;}
+
+header{
+  background:#0d6efd;
+  color:#fff;
+  padding:15px 20px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align: center;
+}
+
+.content{padding:20px;padding-bottom:90px;}
+
+/* Profile Header */
+.profile-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#fff;
+  padding:15px 20px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.profile-header-info input{
+  width: 100%;
+  padding: 5px 8px;
+  margin-bottom: 5px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.profile-header-img{
+  position:relative;
+  text-align:center;
+}
+
+.profile-header-img img{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.profile-header-img input[type="file"]{
+  display:none;
+}
+
+.profile-header-img label{
+  cursor:pointer;
+  color:#0d6efd;
+  font-size:12px;
+  display:block;
+  margin-top:5px;
+}
+
+/* Profile Details */
+.profile-details{
+  margin-top:20px;
+  text-align:left;
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.profile-details label{
+  display:block;
+  margin:10px 0 3px;
+  font-weight:600;
+}
+
+.profile-details input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ddd;
+  font-size:14px;
+}
+
+button{
+  padding:10px 15px;
+  margin-top:15px;
+  border:none;
+  border-radius:8px;
+  background:#0d6efd;
+  color:white;
+  cursor:pointer;
+  width:100%;
+}
+
+button:hover{background:#0b5ed7;}
+
+/* Bottom Nav */
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#fff;
+  display:flex;
+  justify-content:space-around;
+  box-shadow:0 -2px 10px rgba(0,0,0,0.1);
+  padding:8px 0;
+}
+
+.nav-item{
+  text-align:center;
+  color:#777;
+  text-decoration:none;
+  font-size:12px;
+  position:relative;
+}
+
+.nav-item i{
+  display:block;
+  font-size:18px;
+  margin-bottom:3px;
+}
+
+.nav-item.active{
+  color:#0d6efd;
+  font-weight:600;
+}
+
+.badge{
+  position:absolute;
+  top:0;
+  right:18px;
+  background:red;
+  color:white;
+  font-size:10px;
+  padding:2px 5px;
+  border-radius:50%;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark){
+  body { background:#121212; color:#eee; }
+  header { background:#0b5ed7; color:#fff; }
+  .profile-header, .profile-details { background:#1e1e1e; box-shadow:0 4px 10px rgba(0,0,0,0.4); }
+  .profile-details input, .profile-header-info input { background:#2a2a2a; border:1px solid #444; color:#eee; }
+  button { background:#4facfe; color:#fff; }
+  .bottom-nav { background:#1e1e1e; box-shadow:0 -2px 10px rgba(0,0,0,0.5); }
+  .nav-item { color:#aaa; }
+  .nav-item.active { color:#4facfe; }
+  .profile-header-img label { color:#4facfe; }
+}
+
+/* Modal */
+.modal{
+  display:none;
+  position:fixed;
+  z-index:1000;
+  left:0; top:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.5);
+  justify-content:center;
+  align-items:center;
+}
+
+.modal-content{
+  background:gray;
+  padding:20px;
+  border-radius:12px;
+  width:90%;
+  max-width:400px;
+  text-align:center;
+}
+
+.modal-content img{
+  width:100px; height:100px; border-radius:50%; object-fit:cover; margin-bottom:10px;
+}
+
+.modal-content h3{margin:10px 0;}
+.modal-content p{margin:5px 0;color:white;}
+
+.modal-content button{
+  width:45%;
+  margin:10px 2.5%;
+}
+
+/* Spinner Modal */
+#savingOverlay .modal-content {
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  width:200px;
+  text-align:center;
+}
+
+/* Toast styles */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #0d6efd;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.5s ease;
+  z-index: 2000;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.back-btn{
+  position:fixed;
+  top:15px;
+  left:15px;
+  width:42px;
+  height:42px;
+  border:none;
+  border-radius:50%;
+  background:#ffffff;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:0.3s ease;
+  z-index:1000;
+}
+
+.back-btn i{
+  font-size:18px;
+  color:#111;
+}
+
+.back-btn:hover{
+  transform:scale(1.08);
+  background:#f1f5f9;
+}
+
+.back-btn:active{
+  transform:scale(0.95);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <button class="back-btn" onclick="history.back()">
+  <i class="fa-solid fa-arrow-left"></i>
+</button>
+  <h2>Create Your Seller Profile</h2>
+</header>
+
+<div class="content">
+
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="profile-header-info">
+      <input type="text" id="displayName" placeholder="Your Name">
+      <input type="email" id="displayEmail" placeholder="Your Email">
+    </div>
+    <div class="profile-header-img">
+      <img id="profileImage" src="https://via.placeholder.com/100" alt="Profile Picture">
+      <input type="file" id="fileInput" accept="image/*">
+      <label for="fileInput"><i class="fa-solid fa-camera"></i> Change</label>
+    </div>
+  </div>
+
+ <!-- Profile Details -->
+<div class="profile-details">
+  <label for="shopName">Shop Name</label>
+  <input type="text" id="shopName" placeholder="e.g., John's Store">
+
+  <label for="phone">Phone Number</label>
+  <input type="text" id="phone" placeholder="e.g., +254 700 123 456">
+
+  <label for="address">Address</label>
+  <input type="text" id="address" placeholder="e.g., Nairobi, Kenya">
+
+  <label for="bio">Bio</label>
+  <input type="text" id="bio" placeholder="e.g., Selling quality products since 2022">
+
+  <button id="saveBtn">Save Changes</button>
+</div>
+
+<!-- Modal -->
+<div id="previewModal" class="modal">
+  <div class="modal-content">
+    <img id="modalImage" src="" alt="Profile Preview">
+    <h3 id="modalName"></h3>
+    <p id="modalEmail"></p>
+    <p id="modalPhone"></p>
+    <p id="modalShop"></p>
+    <p id="modalBio"></p>
+    <button id="continueBtn">Continue</button>
+    <button id="editBtn">Edit</button>
+  </div>
+</div>
+
+<!-- Saving Animation Overlay -->
+<div id="savingOverlay" class="modal">
+  <div class="modal-content">
+    <i class="fa-solid fa-spinner fa-spin" style="font-size:30px;color:#0d6efd;"></i>
+    <h3>Saving your profile...</h3>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast">Profile saved successfully!</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+  <a href="/profile page/index.html" class="nav-item"><i class="fa-solid fa-user"></i>Profile</a>
+  <a href="/products page/index.html" class="nav-item"><i class="fa-solid fa-box"></i>Products</a>
+   <a href="/homepage/index.html" class="nav-item"><i class="fa-solid fa-home"></i>Home</a>
+  <a href="/upload page/index.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Upload</a>
+  <a href="/orders page/index.html" class="nav-item"><i class="fa-solid fa-cart-shopping"></i>Orders</a>
+  <a href="/messages page/index.html" class="nav-item active"><i class="fa-solid fa-comments"></i>Messages<span class="badge" id="msgBadge">0</span></a>
+</div>
+
+<script>
+// Load saved data from localStorage
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('displayName').value = localStorage.getItem('sellerName') || '';
+  document.getElementById('displayEmail').value = localStorage.getItem('sellerEmail') || '';
+  document.getElementById('profileImage').src = localStorage.getItem('sellerImage') || 'https://via.placeholder.com/100';
+  document.getElementById('shopName').value = localStorage.getItem('shopName') || '';
+  document.getElementById('phone').value = localStorage.getItem('phone') || '';
+  document.getElementById('address').value = localStorage.getItem('address') || '';
+  document.getElementById('bio').value = localStorage.getItem('bio') || '';
+});
+
+// Profile picture live preview
+const fileInput = document.getElementById('fileInput');
+const profileImage = document.getElementById('profileImage');
+
+fileInput.addEventListener('change', function() {
+  const file = this.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      profileImage.src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+  }
+});
+
+// Show modal preview
+const saveBtn = document.getElementById('saveBtn');
+const modal = document.getElementById('previewModal');
+const modalImage = document.getElementById('modalImage');
+const modalName = document.getElementById('modalName');
+const modalEmail = document.getElementById('modalEmail');
+const modalPhone = document.getElementById('modalPhone');
+const modalShop = document.getElementById('modalShop');
+const modalBio = document.getElementById('modalBio');
+const continueBtn = document.getElementById('continueBtn');
+const editBtn = document.getElementById('editBtn');
+const savingOverlay = document.getElementById('savingOverlay');
+
+saveBtn.addEventListener('click', () => {
+  modalImage.src = profileImage.src;
+  modalName.textContent = document.getElementById('displayName').value || 'Not Provided';
+  modalEmail.textContent = document.getElementById('displayEmail').value || 'Not Provided';
+  modalPhone.textContent = document.getElementById('phone').value || 'Not Provided';
+  modalShop.textContent = document.getElementById('shopName').value || 'Not Provided';
+  modalBio.textContent = document.getElementById('bio').value || 'Not Provided';
+  modal.style.display = 'flex';
+});
+
+// Edit button closes modal
+editBtn.addEventListener('click', () => modal.style.display = 'none');
+
+// Continue button triggers saving animation and localStorage
+continueBtn.addEventListener('click', () => {
+  modal.style.display = 'none';
+  savingOverlay.style.display = 'flex';
+
+  setTimeout(() => {
+    savingOverlay.style.display = 'none';
+    showToast('Profile saved successfully!');
+
+    // Save all data to localStorage
+    localStorage.setItem('sellerName', document.getElementById('displayName').value);
+    localStorage.setItem('sellerEmail', document.getElementById('displayEmail').value);
+    localStorage.setItem('sellerImage', profileImage.src);
+    localStorage.setItem('shopName', document.getElementById('shopName').value);
+    localStorage.setItem('phone', document.getElementById('phone').value);
+    localStorage.setItem('address', document.getElementById('address').value);
+    localStorage.setItem('bio', document.getElementById('bio').value);
+  }, 1500);
+});
+
+// Toast function
+function showToast(message){
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(()=>{toast.classList.remove('show');}, 2500);
+}
+</script>
+
+</body>
+</html>
