@@ -2,211 +2,411 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>My Products</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Posted Products</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
 <style>
-body { margin:0; font-family:'Poppins',sans-serif; background:#f4f6f9; color:#111; padding-bottom:70px; }
-header { background:#0d6efd; color:#fff; padding:15px 20px; text-align:center; }
-.content { padding:20px; }
-.posted-container { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; }
-.product-card { 
-  background:#fff; border-radius:12px; padding:15px; 
-  box-shadow:0 4px 10px rgba(0,0,0,0.1); width:250px; text-align:center; 
-  position:relative; overflow:hidden; transition:0.3s; 
+body{
+  margin:0;
+  font-family:Poppins;
+  background:#f4f6fb;
 }
-.product-card img { width:100%; height:150px; object-fit:cover; border-radius:12px; margin-bottom:10px; display:block; }
-.product-card p { margin:5px 0; }
-/* Out of Stock Badge */
-.out-of-stock { 
-  position:absolute; top:10px; left:10px; background:red; color:#fff; 
-  font-size:13px; padding:5px 10px; border-radius:8px; font-weight:700; z-index:100; 
+
+.header{
+  background:linear-gradient(135deg,#2563eb,#14b8a6);
+  color:white;
+  padding:0px;
+  text-align:center;
+  font-weight:600;
 }
-/* Overlay for Out of Stock products */
-.out-of-stock-card { opacity:0.6; border:2px solid red; }
-/* Dark mode */
-@media (prefers-color-scheme: dark){
-  body { background:#121212; color:#eee; }
-  header { background:#0b5ed7; }
-  .product-card { background:#1e1e1e; box-shadow:0 4px 10px rgba(0,0,0,0.5); }
+
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:20px;
 }
-button {
-  margin-top:10px;
-  background:#ff4444;
-  color:#fff;
+
+.card{
+  background:white;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:12px;
+  display:flex;
+  gap:15px;
+  align-items:center;
+  box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+.card img{
+  width:90px;
+  height:90px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+.info{ flex:1; }
+
+.actions button{
+  margin-left:5px;
+  padding:8px 10px;
   border:none;
-  padding:8px 12px;
   border-radius:8px;
   cursor:pointer;
-  font-weight:600;
-  width:100%;
 }
-button:hover { opacity:0.9; }
-.restock-btn { background:#4caf50; }
-.restock-btn:hover { opacity:0.9; }
-#filterBtn { width:200px; margin:10px auto; display:block; }
 
-/* Bottom Navigation */
-.bottom-nav{
+.view{ background:#2563eb; color:white; }
+.delete{ background:#ef4444; color:white; }
+
+/* MODAL */
+.modal{
   position:fixed;
-  bottom:0;
+  top:0; left:0;
   width:100%;
-  background:black;
-  display:flex;
-  justify-content:space-around;
-  box-shadow:0 -2px 10px rgba(0,0,0,0.1);
-  padding:8px 0;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
 }
 
-.nav-item{
-  text-align:center;
-  color:#777;
-  text-decoration:none;
-  font-size:12px;
+.modal-content{
+  background:white;
+  width:90%;
+  max-width:500px;
+  padding:20px;
+  border-radius:12px;
+}
+
+.modal-content input,
+.modal-content textarea{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  margin-bottom:10px;
+  border:1px solid #ddd;
+  border-radius:8px;
+}
+
+.modal-actions{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.save{
+  background:#10b981;
+  color:white;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  flex:1;
+}
+
+.close{
+  background:#6b7280;
+  color:white;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  flex:1;
+}
+.image-box{
   position:relative;
 }
 
-.nav-item i{
-  display:block;
-  font-size:18px;
-  margin-bottom:3px;
+.image-box img{
+  width:70px;
+  height:70px;
+  object-fit:cover;
+  border-radius:8px;
 }
 
-.nav-item.active{
-  color:#0d6efd;
-  font-weight:600;
-}
-.back-btn{
-  position:fixed;
-  top:15px;
-  left:15px;
-  width:42px;
-  height:42px;
+.image-box button{
+  position:absolute;
+  top:-6px;
+  right:-6px;
+  background:red;
+  color:white;
   border:none;
   border-radius:50%;
-  background:#ffffff;
-  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  width:18px;
+  height:18px;
+  font-size:12px;
+  cursor:pointer;
+}
+.back-btn{
   display:flex;
   align-items:center;
-  justify-content:center;
+  gap:8px;
+  padding:10px 14px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#2563eb,#14b8a6);
+  color:white;
+  font-family:Poppins, sans-serif;
+  font-size:14px;
   cursor:pointer;
-  transition:0.3s ease;
-  z-index:1000;
+  box-shadow:0 6px 15px rgba(0,0,0,0.15);
+  transition:0.2s ease;
+margin-bottom: -20px;
 }
 
 .back-btn i{
-  font-size:18px;
-  color:#111;
+  font-size:16px;
 }
 
 .back-btn:hover{
-  transform:scale(1.08);
-  background:#f1f5f9;
+  transform:translateX(-3px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.25);
 }
 
 .back-btn:active{
   transform:scale(0.95);
 }
+
 </style>
 </head>
+
 <body>
-<header>
-   <button class="back-btn" onclick="history.back()">
-    <i class="fa-solid fa-arrow-left"></i>
-  </button>
-  <h2>Posted Products</h2>
-  <button id="filterBtn">Show Out-of-Stock Only</button>
-</header>
-<div class="content">
-  <div class="posted-container" id="postedContainer"></div>
+
+
+<div class="header">
+  <button class="back-btn" onclick="history.back()">
+  <i class="fa-solid fa-arrow-left"></i>
+  Back
+</button>
+  🛍 My Products Dashboard
+</div>
+<div style="max-width:1000px;margin:20px auto;padding:0 20px; position:relative;">
+
+  <i class="fa-solid fa-magnifying-glass" 
+     style="position:absolute; left:35px; top:50%; transform:translateY(-50%); color:#888;"></i>
+
+  <input 
+    type="text" 
+    id="searchInput" 
+    placeholder="Search product by name..."
+    oninput="render()"
+    style="
+      width:100%;
+      padding:12px 12px 12px 40px;
+      border-radius:10px;
+      border:1px solid #ddd;
+      outline:none;
+      font-family:Poppins;
+    "
+  >
 </div>
 
-<!-- Bottom Navigation -->
-<div class="bottom-nav">
-  <a href="/profile page/index.html" class="nav-item"><i class="fa-solid fa-user"></i>Profile</a>
-  <a href="/products page/index.html" class="nav-item"><i class="fa-solid fa-box"></i>Products</a>
-   <a href="/homepage/index.html" class="nav-item"><i class="fa-solid fa-home"></i>Home</a>
-  <a href="/upload page/index.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Upload</a>
-  <a href="/orders page/index.html" class="nav-item"><i class="fa-solid fa-cart-shopping"></i>Orders</a>
-  <a href="/messages page/index.html" class="nav-item active"><i class="fa-solid fa-comments"></i>Messages<span class="badge" id="msgBadge">0</span></a>
+
+
+<div class="container" id="list"></div>
+
+<!-- MODAL -->
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+
+    <h3>Edit Product</h3>
+
+    <input type="text" id="editName" placeholder="Product name">
+    <input type="number" id="editPrice" placeholder="Price">
+    <input type="number" id="editDiscount" placeholder="Discount">
+    <textarea id="editDesc" placeholder="Description"></textarea>
+
+    <label><b>Product Images</b></label>
+
+    <!-- existing images -->
+    <div id="imageList" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
+
+    <!-- add new images -->
+    <input type="file" id="addImages" multiple>
+
+    <div class="modal-actions">
+      <button class="save" onclick="saveEdit()">Save & Repost</button>
+      <button class="close" onclick="closeModal()">Close</button>
+    </div>
+
+  </div>
 </div>
+
+
 <script>
-const postedContainer = document.getElementById('postedContainer');
-const filterBtn = document.getElementById('filterBtn');
-let postedProducts = JSON.parse(localStorage.getItem('postedProducts')) || [];
-let showOutOfStockOnly = false;
+  let products = JSON.parse(localStorage.getItem("products")) || [];
+let currentId = null;
+let currentImages = [];
 
-// Toggle filter button
-filterBtn.addEventListener('click', () => {
-  showOutOfStockOnly = !showOutOfStockOnly;
-  filterBtn.textContent = showOutOfStockOnly ? 'Show All Products' : 'Show Out-of-Stock Only';
-  displayPostedProducts();
-});
+// OPEN EDIT MODAL
+function openEdit(id){
 
-function displayPostedProducts() {
-  postedContainer.innerHTML = '';
+  const product = products.find(p => String(p.id) === String(id));
+  if(!product) return alert("Product not found");
 
-  postedProducts.forEach((product) => {
-    if(showOutOfStockOnly && product.quantity > 0) return;
+  currentId = id;
 
-    const card = document.createElement('div');
-    card.classList.add('product-card');
+  document.getElementById("editName").value = product.name || "";
+  document.getElementById("editPrice").value = product.price || "";
+  document.getElementById("editDiscount").value = product.discount || "";
+  document.getElementById("editDesc").value = product.description || "";
 
-    if(product.quantity <= 0){
-      card.classList.add('out-of-stock-card');
-      const badge = document.createElement('div');
-      badge.classList.add('out-of-stock');
-      badge.textContent = 'OUT OF STOCK';
-      card.appendChild(badge);
-    }
+  currentImages = product.images ? [...product.images] : [];
 
-    const img = document.createElement('img');
-    img.src = product.image || '';
-    img.alt = 'Product Image';
-    card.appendChild(img);
+  renderImages();
 
-    ['name','newPrice','discount','timePosted','quantity'].forEach(field => {
-      if(product[field] !== undefined){
-        const p = document.createElement('p');
-        if(field === 'name') p.textContent = `NAME: ${product.name}`;
-        if(field === 'newPrice') p.textContent = `PRICE: KES ${product.newPrice}`;
-        if(field === 'discount') p.textContent = `DISCOUNT: ${product.discount}% OFF`;
-        if(field === 'timePosted') p.textContent = `TIME POSTED: ${product.timePosted}`;
-        if(field === 'quantity') p.textContent = `QUANTITY: ${product.quantity}`;
-        card.appendChild(p);
-      }
-    });
+  document.getElementById("modal").style.display = "flex";
+}
 
-    if(product.quantity > 0){
-      const outOfStockBtn = document.createElement('button');
-      outOfStockBtn.textContent = 'Mark as Out of Stock';
-      outOfStockBtn.addEventListener('click', () => {
-        product.quantity = 0;
-        localStorage.setItem('postedProducts', JSON.stringify(postedProducts));
-        displayPostedProducts();
-      });
-      card.appendChild(outOfStockBtn);
-    } else {
-      const restockBtn = document.createElement('button');
-      restockBtn.textContent = 'Restock Product';
-      restockBtn.classList.add('restock-btn');
-      restockBtn.addEventListener('click', () => {
-        const qty = parseInt(prompt('Enter new quantity:', '1'));
-        if(!isNaN(qty) && qty > 0){
-          product.quantity = qty;
-          localStorage.setItem('postedProducts', JSON.stringify(postedProducts));
-          displayPostedProducts();
-        }
-      });
-      card.appendChild(restockBtn);
-    }
+// SHOW IMAGES
+function renderImages(){
+  const box = document.getElementById("imageList");
+  box.innerHTML = "";
 
-    postedContainer.appendChild(card);
+  currentImages.forEach((img, index) => {
+
+    const div = document.createElement("div");
+    div.className = "image-box";
+
+    div.innerHTML = `
+      <img src="${img}">
+      <button onclick="removeImage(${index})">×</button>
+    `;
+
+    box.appendChild(div);
   });
 }
 
-displayPostedProducts();
+// REMOVE IMAGE
+function removeImage(index){
+  currentImages.splice(index, 1);
+  renderImages();
+}
+
+// ADD NEW IMAGES
+document.getElementById("addImages").addEventListener("change", function(){
+
+  const files = Array.from(this.files);
+
+  files.forEach(file => {
+    const reader = new FileReader();
+
+    reader.onload = e => {
+      currentImages.push(e.target.result);
+      renderImages();
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+});
+
+// SAVE + REPOST (FIXED VERSION)
+function saveEdit(){
+
+  const index = products.findIndex(p => String(p.id) === String(currentId));
+
+  if(index === -1){
+    alert("Product not found");
+    return;
+  }
+
+  // UPDATE PRODUCT PROPERLY
+  products[index] = {
+    ...products[index],
+    name: document.getElementById("editName").value,
+    price: document.getElementById("editPrice").value,
+    discount: document.getElementById("editDiscount").value,
+    description: document.getElementById("editDesc").value,
+    images: currentImages,
+    updatedAt: new Date().toLocaleString()
+  };
+
+  localStorage.setItem("products", JSON.stringify(products));
+
+  closeModal();
+  render();
+
+  alert("Product updated & reposted successfully!");
+}
+
+// CLOSE MODAL
+function closeModal(){
+  document.getElementById("modal").style.display = "none";
+}
+
+// DELETE PRODUCT
+function deleteProduct(id){
+
+  if(!confirm("Delete product?")) return;
+
+  products = products.filter(p => String(p.id) !== String(id));
+
+  localStorage.setItem("products", JSON.stringify(products));
+
+  render();
+}
+
+// RENDER LIST (IMPORTANT - ADD THIS IF MISSING)
+function render(){
+
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  const searchValue = document.getElementById("searchInput")?.value.toLowerCase() || "";
+
+  let filtered = products.filter(p => 
+    p.name.toLowerCase().includes(searchValue)
+  );
+
+  if(filtered.length === 0){
+    list.innerHTML = "<p style='text-align:center'>No matching products found</p>";
+    return;
+  }
+
+  filtered.forEach((p, index) => {
+
+    const img = (p.images && p.images.length) ? p.images[0] : "";
+
+    const div = document.createElement("div");
+    div.className = "card";
+
+    div.innerHTML = `
+      <span style="
+        position:absolute;
+        margin-left:-10px;
+        margin-top:-10px;
+        background:#2563eb;
+        color:white;
+        width:25px;
+        height:25px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border-radius:50%;
+        font-size:12px;
+      ">${index + 1}</span>
+
+      <img src="${img}">
+      
+      <div class="info">
+        <h3>${p.name}</h3>
+        <p>KSh ${p.price}</p>
+      </div>
+
+      <div class="actions">
+        <button class="view" onclick="openEdit('${p.id}')">View</button>
+        <button class="delete" onclick="deleteProduct('${p.id}')">Delete</button>
+      </div>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+render();
+
 </script>
+
 </body>
 </html>

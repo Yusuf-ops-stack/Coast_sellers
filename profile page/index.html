@@ -3,416 +3,418 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Seller Profile</title>
+<title>CoastMall Seller Dashboard</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-*{box-sizing:border-box;}
-body{margin:0;font-family:'Poppins',sans-serif;background:#f4f6f9;color:#111;}
+:root{
+  --primary:#2563eb;
+  --secondary:#14b8a6;
+  --bg:#f4f6fb;
+}
 
-header{
-  background:#0d6efd;
+body{
+  margin:0;
+  font-family:Poppins;
+  background:var(--bg);
+}
+
+/* HEADER */
+.header{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
   color:#fff;
-  padding:15px 20px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  text-align: center;
-}
-
-.content{padding:20px;padding-bottom:90px;}
-
-/* Profile Header */
-.profile-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#fff;
-  padding:15px 20px;
-  border-radius:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);
-}
-
-.profile-header-info input{
-  width: 100%;
-  padding: 5px 8px;
-  margin-bottom: 5px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.profile-header-img{
-  position:relative;
+  padding:20px;
   text-align:center;
 }
 
-.profile-header-img img{
-  width:70px;
-  height:70px;
+/* CONTAINER */
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:20px;
+}
+
+/* PROFILE */
+.profile-card{
+  background:#fff;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  margin-bottom:20px;
+}
+
+.banner{
+  height:180px;
+  background: linear-gradient(135deg, #2563eb, #14b8a6);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+
+/* CAMERA ICON */
+.camera-banner{
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:rgba(0,0,0,0.6);
+  color:#fff;
+  padding:8px;
   border-radius:50%;
+  cursor:pointer;
+}
+
+.camera-logo{
+  position:absolute;
+  height: 10px;
+  width: 10px;
+  bottom:0;
+  right:0;
+  left: 65px;
+  background:var(--primary);
+  color:#fff;
+  padding:6px;
+  border-radius:50%;
+  display: flex;
+  justify-items: center;
+  justify-content: center;
+  font-size: 12px;
+  align-items: center;
+  cursor:pointer;
+  border:2px solid #fff;
+}
+
+/* LOGO */
+.logo{
+  width:95px;
+  height:95px;
+  border-radius:50%;
+  border:4px solid #fff;
+  bottom:-135px;
+  left:10px;
+  position: relative;
+  z-index: 2000;
+  background:#e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+}
+
+.logo img{
+  width:100%;
+  height:100%;
   object-fit:cover;
 }
 
-.profile-header-img input[type="file"]{
-  display:none;
+/* PROFILE INFO */
+.profile-info{
+  padding:70px 20px 20px;
 }
 
-.profile-header-img label{
-  cursor:pointer;
-  color:#0d6efd;
-  font-size:12px;
-  display:block;
-  margin-top:5px;
-}
-
-/* Profile Details */
-.profile-details{
-  margin-top:20px;
-  text-align:left;
-  background:#fff;
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);
-}
-
-.profile-details label{
-  display:block;
-  margin:10px 0 3px;
-  font-weight:600;
-}
-
-.profile-details input{
-  width:100%;
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ddd;
-  font-size:14px;
-}
-
-button{
-  padding:10px 15px;
-  margin-top:15px;
-  border:none;
-  border-radius:8px;
-  background:#0d6efd;
-  color:white;
-  cursor:pointer;
-  width:100%;
-}
-
-button:hover{background:#0b5ed7;}
-
-/* Bottom Nav */
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  background:#fff;
+.stats{
   display:flex;
-  justify-content:space-around;
-  box-shadow:0 -2px 10px rgba(0,0,0,0.1);
-  padding:8px 0;
+  gap:10px;
+  margin-top:15px;
 }
 
-.nav-item{
-  text-align:center;
-  color:#777;
-  text-decoration:none;
-  font-size:12px;
-  position:relative;
-}
-
-.nav-item i{
-  display:block;
-  font-size:18px;
-  margin-bottom:3px;
-}
-
-.nav-item.active{
-  color:#0d6efd;
-  font-weight:600;
-}
-
-.badge{
-  position:absolute;
-  top:0;
-  right:18px;
-  background:red;
-  color:white;
-  font-size:10px;
-  padding:2px 5px;
-  border-radius:50%;
-}
-
-/* Dark Mode */
-@media (prefers-color-scheme: dark){
-  body { background:#121212; color:#eee; }
-  header { background:#0b5ed7; color:#fff; }
-  .profile-header, .profile-details { background:#1e1e1e; box-shadow:0 4px 10px rgba(0,0,0,0.4); }
-  .profile-details input, .profile-header-info input { background:#2a2a2a; border:1px solid #444; color:#eee; }
-  button { background:#4facfe; color:#fff; }
-  .bottom-nav { background:#1e1e1e; box-shadow:0 -2px 10px rgba(0,0,0,0.5); }
-  .nav-item { color:#aaa; }
-  .nav-item.active { color:#4facfe; }
-  .profile-header-img label { color:#4facfe; }
-}
-
-/* Modal */
-.modal{
-  display:none;
-  position:fixed;
-  z-index:1000;
-  left:0; top:0;
-  width:100%; height:100%;
-  background:rgba(0,0,0,0.5);
-  justify-content:center;
-  align-items:center;
-}
-
-.modal-content{
-  background:gray;
-  padding:20px;
-  border-radius:12px;
-  width:90%;
-  max-width:400px;
+.stat{
+  flex:1;
+  background:#f9fafb;
+  padding:12px;
+  border-radius:10px;
   text-align:center;
 }
 
-.modal-content img{
-  width:100px; height:100px; border-radius:50%; object-fit:cover; margin-bottom:10px;
-}
-
-.modal-content h3{margin:10px 0;}
-.modal-content p{margin:5px 0;color:white;}
-
-.modal-content button{
-  width:45%;
-  margin:10px 2.5%;
-}
-
-/* Spinner Modal */
-#savingOverlay .modal-content {
+/* CARD */
+.card{
   background:#fff;
   padding:20px;
-  border-radius:12px;
-  width:200px;
-  text-align:center;
+  border-radius:15px;
+  margin-bottom:15px;
 }
 
-/* Toast styles */
-.toast {
-  position: fixed;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: #0d6efd;
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.5s ease;
-  z-index: 2000;
+/* INPUTS */
+input, textarea, select{
+  width:100%;
+  padding:12px;
+  margin-top:6px;
+  margin-bottom:12px;
+  border:1px solid #ddd;
+  border-radius:10px;
+}
+#saveBtn{
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#2563eb,#14b8a6);
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
 }
 
-.toast.show {
-  transform: translateX(-50%) translateY(0);
-  opacity: 1;
-  pointer-events: auto;
+#saveBtn:hover{
+  transform:scale(1.02);
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+#saveBtn:active{
+  transform:scale(0.98);
 }
 .back-btn{
-  position:fixed;
-  top:15px;
-  left:15px;
-  width:42px;
-  height:42px;
-  border:none;
-  border-radius:50%;
-  background:#ffffff;
-  box-shadow:0 4px 12px rgba(0,0,0,0.15);
   display:flex;
   align-items:center;
-  justify-content:center;
+  gap:8px;
+  padding:10px 14px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#2563eb,#14b8a6);
+  color:white;
+  font-family:Poppins, sans-serif;
+  font-size:14px;
   cursor:pointer;
-  transition:0.3s ease;
-  z-index:1000;
+  box-shadow:0 6px 15px rgba(0,0,0,0.15);
+  transition:0.2s ease;
 }
 
 .back-btn i{
-  font-size:18px;
-  color:#111;
+  font-size:16px;
 }
 
 .back-btn:hover{
-  transform:scale(1.08);
-  background:#f1f5f9;
+  transform:translateX(-3px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.25);
 }
 
 .back-btn:active{
   transform:scale(0.95);
 }
+
 </style>
 </head>
+
 <body>
 
-<header>
+<div class="header">
   <button class="back-btn" onclick="history.back()">
   <i class="fa-solid fa-arrow-left"></i>
+  Back
 </button>
-  <h2>Create Your Seller Profile</h2>
-</header>
 
-<div class="content">
+  <i class="fa fa-store"></i> CoastMall Seller Dashboard
+</div>
 
-  <!-- Profile Header -->
-  <div class="profile-header">
-    <div class="profile-header-info">
-      <input type="text" id="displayName" placeholder="Your Name">
-      <input type="email" id="displayEmail" placeholder="Your Email">
+<div class="container">
+
+<!-- PROFILE -->
+<div class="profile-card">
+
+  <div class="banner" id="bannerPreview">
+
+    <!-- BANNER CAMERA -->
+    <label class="camera-banner">
+      <i class="fa fa-camera"></i>
+      <input type="file" id="bannerInput" hidden>
+    </label>
+
+    <!-- LOGO -->
+
+    <div class="holder">
+      <div id="logoPreview" class="logo">
+        <i class="fa fa-store"></i>
+              <!-- LOGO CAMERA -->
+      <label class="camera-logo">
+        <i class="fa fa-camera"></i>
+        <input type="file" id="logoInput" hidden>
+      </label>
+      </div>
     </div>
-    <div class="profile-header-img">
-      <img id="profileImage" src="https://via.placeholder.com/100" alt="Profile Picture">
-      <input type="file" id="fileInput" accept="image/*">
-      <label for="fileInput"><i class="fa-solid fa-camera"></i> Change</label>
+
+  </div>
+
+  <div class="profile-info">
+    <h2 id="displayName">Your Business Name</h2>
+    <p id="displayDesc">No description added yet</p>
+
+    <div class="stats">
+      <div class="stat"><h3>0</h3><small>Products</small></div>
+      <div class="stat"><h3>0</h3><small>Orders</small></div>
+      <div class="stat"><h3>KSh 0</h3><small>Earnings</small></div>
     </div>
   </div>
 
- <!-- Profile Details -->
-<div class="profile-details">
-  <label for="shopName">Shop Name</label>
-  <input type="text" id="shopName" placeholder="e.g., John's Store">
-
-  <label for="phone">Phone Number</label>
-  <input type="text" id="phone" placeholder="e.g., +254 700 123 456">
-
-  <label for="address">Address</label>
-  <input type="text" id="address" placeholder="e.g., Nairobi, Kenya">
-
-  <label for="bio">Bio</label>
-  <input type="text" id="bio" placeholder="e.g., Selling quality products since 2022">
-
-  <button id="saveBtn">Save Changes</button>
 </div>
 
-<!-- Modal -->
-<div id="previewModal" class="modal">
-  <div class="modal-content">
-    <img id="modalImage" src="" alt="Profile Preview">
-    <h3 id="modalName"></h3>
-    <p id="modalEmail"></p>
-    <p id="modalPhone"></p>
-    <p id="modalShop"></p>
-    <p id="modalBio"></p>
-    <button id="continueBtn">Continue</button>
-    <button id="editBtn">Edit</button>
-  </div>
+<!-- BUSINESS INFO -->
+<div class="card">
+  <h3>Business Info</h3>
+
+  <input id="bizName" placeholder="e.g. Coast Fashion Store" oninput="liveUpdate()">
+  <textarea id="bizDesc" placeholder="e.g. We sell clothes and shoes" oninput="liveUpdate()"></textarea>
+
+<label>Category</label>
+<select id="bizCategory" onchange="handleCategoryChange()">
+  <option disabled selected>Select category</option>
+  <option>Fashion</option>
+  <option>Electronics</option>
+  <option>Food</option>
+  <option>Beauty</option>
+  <option>Home & Kitchen</option>
+  <option>Services</option>
+  <option>Other</option>
+</select>
+
+<!-- HIDDEN INPUT FOR "OTHER" -->
+<input 
+  type="text" 
+  id="otherCategory" 
+  placeholder="Specify your category..."
+  style="display:none;"
+>
+
 </div>
 
-<!-- Saving Animation Overlay -->
-<div id="savingOverlay" class="modal">
-  <div class="modal-content">
-    <i class="fa-solid fa-spinner fa-spin" style="font-size:30px;color:#0d6efd;"></i>
-    <h3>Saving your profile...</h3>
-  </div>
+<!-- CONTACT -->
+<div class="card">
+  <h3>Contact & Location</h3>
+
+  <label>Phone Number</label>
+  <input id="bizPhone" placeholder="e.g. 0712345678 / +254712345678">
+
+  <small style="color:#6b7280;">Recommended: Use WhatsApp-enabled number</small>
+
+  <br><br>
+
+  <label>Email Address</label>
+  <input id="bizEmail" type="email" placeholder="e.g. yourstore@gmail.com">
+
+  <small style="color:#6b7280;">Recommended: Use a business email for trust</small>
+
+  <br><br>
+
+  <label>Location</label>
+  <input id="bizLocation" placeholder="e.g. Nairobi CBD, Tom Mboya Street">
+
+  <small style="color:#6b7280;">Recommended: Be specific for customer delivery</small>
+
+  <br><br>
+
+  <label>WhatsApp Link (Optional)</label>
+  <input id="bizWhatsapp" placeholder="e.g. https://wa.me/254712345678">
+
+  <small style="color:#6b7280;">Recommended: Increases customer conversion</small>
+
+</div>
+</div>
+<div class="card">
+  <button id="saveBtn" onclick="saveProfile()">
+    <i class="fa fa-save"></i> Save Profile
+  </button>
+
+  <p style="text-align:center;color:#6b7280;margin-top:10px;font-size:13px;">
+    Your changes will be saved to your account
+  </p>
 </div>
 
-<!-- Toast Notification -->
-<div id="toast" class="toast">Profile saved successfully!</div>
-
-<!-- Bottom Navigation -->
-<div class="bottom-nav">
-  <a href="/profile page/index.html" class="nav-item"><i class="fa-solid fa-user"></i>Profile</a>
-  <a href="/products page/index.html" class="nav-item"><i class="fa-solid fa-box"></i>Products</a>
-   <a href="/homepage/index.html" class="nav-item"><i class="fa-solid fa-home"></i>Home</a>
-  <a href="/upload page/index.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i>Upload</a>
-  <a href="/orders page/index.html" class="nav-item"><i class="fa-solid fa-cart-shopping"></i>Orders</a>
-  <a href="/messages page/index.html" class="nav-item active"><i class="fa-solid fa-comments"></i>Messages<span class="badge" id="msgBadge">0</span></a>
-</div>
 
 <script>
-// Load saved data from localStorage
-window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('displayName').value = localStorage.getItem('sellerName') || '';
-  document.getElementById('displayEmail').value = localStorage.getItem('sellerEmail') || '';
-  document.getElementById('profileImage').src = localStorage.getItem('sellerImage') || 'https://via.placeholder.com/100';
-  document.getElementById('shopName').value = localStorage.getItem('shopName') || '';
-  document.getElementById('phone').value = localStorage.getItem('phone') || '';
-  document.getElementById('address').value = localStorage.getItem('address') || '';
-  document.getElementById('bio').value = localStorage.getItem('bio') || '';
-});
 
-// Profile picture live preview
-const fileInput = document.getElementById('fileInput');
-const profileImage = document.getElementById('profileImage');
+// LIVE TEXT
+function liveUpdate(){
+  displayName.innerText = bizName.value || "Your Business Name";
+  displayDesc.innerText = bizDesc.value || "No description added yet";
+}
 
-fileInput.addEventListener('change', function() {
-  const file = this.files[0];
-  if(file){
-    const reader = new FileReader();
-    reader.onload = function(e){
-      profileImage.src = e.target.result;
+// IMAGE UPLOAD HANDLER
+document.addEventListener("change", function(e){
+
+  // LOGO
+  if(e.target.id === "logoInput"){
+    let file = e.target.files[0];
+    if(file){
+      let reader = new FileReader();
+      reader.onload = function(ev){
+        logoPreview.innerHTML = `
+          <img src="${ev.target.result}">
+          <label class="camera-logo">
+            <i class="fa fa-camera"></i>
+            <input type="file" id="logoInput" hidden>
+          </label>
+        `;
+      };
+      reader.readAsDataURL(file);
     }
-    reader.readAsDataURL(file);
   }
+
+  // BANNER
+  if(e.target.id === "bannerInput"){
+    let file = e.target.files[0];
+    if(file){
+      let reader = new FileReader();
+      reader.onload = function(ev){
+        bannerPreview.style.backgroundImage = `url(${ev.target.result})`;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
 });
+function handleCategoryChange(){
+  let category = document.getElementById("bizCategory").value;
+  let otherInput = document.getElementById("otherCategory");
 
-// Show modal preview
-const saveBtn = document.getElementById('saveBtn');
-const modal = document.getElementById('previewModal');
-const modalImage = document.getElementById('modalImage');
-const modalName = document.getElementById('modalName');
-const modalEmail = document.getElementById('modalEmail');
-const modalPhone = document.getElementById('modalPhone');
-const modalShop = document.getElementById('modalShop');
-const modalBio = document.getElementById('modalBio');
-const continueBtn = document.getElementById('continueBtn');
-const editBtn = document.getElementById('editBtn');
-const savingOverlay = document.getElementById('savingOverlay');
-
-saveBtn.addEventListener('click', () => {
-  modalImage.src = profileImage.src;
-  modalName.textContent = document.getElementById('displayName').value || 'Not Provided';
-  modalEmail.textContent = document.getElementById('displayEmail').value || 'Not Provided';
-  modalPhone.textContent = document.getElementById('phone').value || 'Not Provided';
-  modalShop.textContent = document.getElementById('shopName').value || 'Not Provided';
-  modalBio.textContent = document.getElementById('bio').value || 'Not Provided';
-  modal.style.display = 'flex';
+  if(category === "Other"){
+    otherInput.style.display = "block";
+  } else {
+    otherInput.style.display = "none";
+    otherInput.value = ""; // reset
+  }
+}
+document.getElementById("bizPhone").addEventListener("input", function(){
+  let num = this.value.replace(/\D/g,'');
+  if(num.startsWith("0")){
+    num = "254" + num.substring(1);
+  }
+  document.getElementById("bizWhatsapp").value = 
+    "https://wa.me/" + num;
 });
+function saveProfile(){
 
-// Edit button closes modal
-editBtn.addEventListener('click', () => modal.style.display = 'none');
+  let btn = document.getElementById("saveBtn");
 
-// Continue button triggers saving animation and localStorage
-continueBtn.addEventListener('click', () => {
-  modal.style.display = 'none';
-  savingOverlay.style.display = 'flex';
+  btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Saving...`;
+  btn.disabled = true;
 
   setTimeout(() => {
-    savingOverlay.style.display = 'none';
-    showToast('Profile saved successfully!');
 
-    // Save all data to localStorage
-    localStorage.setItem('sellerName', document.getElementById('displayName').value);
-    localStorage.setItem('sellerEmail', document.getElementById('displayEmail').value);
-    localStorage.setItem('sellerImage', profileImage.src);
-    localStorage.setItem('shopName', document.getElementById('shopName').value);
-    localStorage.setItem('phone', document.getElementById('phone').value);
-    localStorage.setItem('address', document.getElementById('address').value);
-    localStorage.setItem('bio', document.getElementById('bio').value);
-  }, 1500);
-});
+    let profile = {
+      name: bizName.value,
+      desc: bizDesc.value,
+      category: bizCategory.value,
+      phone: bizPhone.value,
+      email: bizEmail.value,
+      location: bizLocation.value,
+      logo: logoPreview.querySelector("img")?.src || "",
+      banner: bannerPreview.style.backgroundImage || ""
+    };
 
-// Toast function
-function showToast(message){
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(()=>{toast.classList.remove('show');}, 2500);
+    localStorage.setItem("sellerProfile", JSON.stringify(profile));
+
+    btn.innerHTML = `<i class="fa fa-check"></i> Saved Successfully`;
+    
+    setTimeout(() => {
+      btn.innerHTML = `<i class="fa fa-save"></i> Save Profile`;
+      btn.disabled = false;
+    }, 2000);
+
+  }, 1000);
 }
+
 </script>
 
 </body>

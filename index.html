@@ -1,319 +1,417 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>CoastMall Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<title>Seller Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
 
 <style>
-body{
+:root{
+  --bg:#0f172a;
+  --card:#111827;
+  --text:#f1f5f9;
+  --muted:#94a3b8;
+  --accent:#3b82f6;
+  --sidebar:#0b1220;
+}
+
+*{
   margin:0;
-  font-family:Poppins;
-  background:linear-gradient(135deg,#f4f6f9,#e9eef5);
-  padding-bottom:80px;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Poppins, sans-serif;
 }
 
-/* HEADER */
-.header{
-  background:linear-gradient(135deg,#0f172a,#1e293b);
-  color:white;
-  padding:18px;
-  text-align:center;
-  font-size:18px;
+body{
+  display:flex;
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:260px;
+  background:var(--sidebar);
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+.logo{
+  font-size:20px;
   font-weight:600;
-  letter-spacing:0.5px;
+  margin-bottom:20px;
+  color:var(--accent);
 }
 
-/* STATS */
-.stats{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  padding:15px;
+.features h3{
+  margin:10px 0;
+  font-size:14px;
+  color:var(--muted);
+}
+
+.features ul{
+  list-style:none;
+}
+
+.features ul li{
+  padding:10px;
+  margin:6px 0;
+  background:#111827;
+  border-radius:10px;
+  font-size:14px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.features ul li i{
+  color:var(--accent);
+}
+
+/* INSTALL BUTTON */
+.install-btn{
+  background:var(--accent);
+  border:none;
+  padding:12px;
+  color:white;
+  font-size:14px;
+  border-radius:10px;
+  cursor:pointer;
+  width:100%;
+  margin-top:20px;
+  transition:0.3s;
+}
+
+.install-btn:hover{
+  background:#2563eb;
+}
+
+/* MAIN CONTENT */
+.main{
+  flex:1;
+  padding:30px;
 }
 
 .card{
-  background:white;
-  padding:16px;
-  border-radius:16px;
-  box-shadow:0 6px 15px rgba(0,0,0,0.08);
-  transition:0.3s;
+  background:var(--card);
+  padding:20px;
+  border-radius:15px;
+  margin-bottom:20px;
 }
 
-.card:hover{
-  transform:translateY(-3px);
+.card h2{
+  margin-bottom:10px;
 }
 
-.card h4{
-  margin:0;
-  font-size:12px;
-  color:#777;
-}
-
-.card p{
-  font-size:20px;
-  font-weight:700;
-  margin-top:8px;
-  color:#111;
-}
-
-/* QUICK ACTIONS */
-.actions{
+.grid{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  padding:0 15px;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
 }
 
-.action{
-  background:white;
-  padding:18px;
-  border-radius:16px;
+.box{
+  background:#1f2937;
+  padding:15px;
+  border-radius:12px;
+}
+
+@media(max-width:768px){
+  .sidebar{
+    width:200px;
+  }
+}
+.features ul li i{
+  width:22px;
   text-align:center;
-  cursor:pointer;
-  box-shadow:0 5px 12px rgba(0,0,0,0.06);
-  transition:0.3s;
-  font-weight:500;
+  color:#3b82f6;
+  margin-right:8px;
 }
-
-.action:hover{
-  background:#eef2ff;
-  transform:scale(1.02);
-}
-
-/* BOTTOM NAV */
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  height:70px;
-  background:white;
-  display:flex;
-  justify-content:space-around;
+/* HIDE MENU BUTTON ON DESKTOP */
+.mobile-topbar{
+  display:none;
   align-items:center;
-  box-shadow:0 -2px 15px rgba(0,0,0,0.08);
-  border-top-left-radius:18px;
-  border-top-right-radius:18px;
+  gap:10px;
+  margin-bottom:20px;
 }
 
-.nav-item{
-  text-align:center;
-  font-size:11px;
-  color:#666;
+.menu-btn{
+  background:#111827;
+  border:none;
+  color:white;
+  padding:10px 12px;
+  border-radius:10px;
   cursor:pointer;
-  flex:1;
+  font-size:18px;
+}
+
+/* MOBILE SLIDE MENU */
+@media(max-width:768px){
+
+  body{
+    flex-direction:column;
+  }
+
+  .mobile-topbar{
+    display:flex;
+  }
+
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:-260px;
+    height:100%;
+    z-index:999;
+    transition:0.3s;
+    box-shadow:5px 0 20px rgba(0,0,0,0.3);
+  }
+
+  .sidebar.active{
+    left:0;
+  }
+
+  .main{
+    width:100%;
+    padding:15px;
+  }
+
+  /* DARK OVERLAY */
+  .overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.4);
+    display:none;
+    z-index:998;
+  }
+
+  .overlay.active{
+    display:block;
+  }
+}
+.features ul li{
+  cursor:pointer;
   transition:0.2s;
 }
 
-.nav-item i{
+.features ul li:hover{
+  background:#1f2937;
+  transform:translateX(5px);
+}
+.features ul li{
+  padding:0;
+}
+
+.features ul li a{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  text-decoration:none;
+  color:inherit;
+  border-radius:10px;
+  width:100%;
+}
+
+.features ul li a:hover{
+  background:#1f2937;
+}
+.sidebar{
+  pointer-events:auto;
+}
+
+.sidebar.active{
+  pointer-events:auto;
+}
+.overlay{
+  pointer-events:none;
+}
+
+.overlay.active{
+  pointer-events:auto;
+}
+.sidebar{
+  z-index:1000;
+}
+
+.overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.4);
+  display:none;
+}
+
+.overlay.active{
   display:block;
-  font-size:18px;
-  margin-bottom:3px;
 }
 
-.nav-item:hover{
-  color:#2563eb;
-}
 
-.active{
-  color:#2563eb;
-  font-weight:600;
-}
-
-/* SMALL TAG */
-.tag{
-  text-align:center;
-  font-size:12px;
-  color:#888;
-  margin-top:10px;
-}
 </style>
-
 </head>
 
 <body>
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-<div class="header">📦 CoastMall Seller Dashboard</div>
+<div class="mobile-topbar">
+  <button class="menu-btn" onclick="toggleMenu()">
+    <i class="fa-solid fa-bars"></i>
+  </button>
 
-<div class="tag">Manage your store in real time</div>
+  <h2>Seller Dashboard</h2>
+</div>
 
-<!-- STATS -->
-<div class="stats">
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div>
+    <div class="logo">
+      <i class="fa-solid fa-store"></i> Seller Panel
+    </div>
 
-  <div class="card">
-    <h4>Total Orders</h4>
-    <p id="total">0</p>
+<div class="features">
+  <h3>Recommended Features</h3>
+
+  <ul>
+    <li><a href="/profile page/index.html"><i class="fa-solid fa-user"></i> Profile</a></li>
+    <li><a href="/products page/index.html"><i class="fa-solid fa-box-open"></i> My Products</a></li>
+    <li><a href="/orders page/index.html"><i class="fa-solid fa-cart-shopping"></i> Orders</a></li>
+    <li><a href="/messages page/index.html"><i class="fa-solid fa-comments"></i> Buyer Chat System</a></li>
+    <li><a href="/notifications page/index.html"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+    <li><a href="/upload page/index.html"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</a></li>
+  </ul>
+</div>
+
+
+
   </div>
 
-  <div class="card">
-    <h4>Pending</h4>
-    <p id="pending">0</p>
-  </div>
-
-  <div class="card">
-    <h4>Delivered</h4>
-    <p id="delivered">0</p>
-  </div>
-
-  <div class="card">
-    <h4>Revenue</h4>
-    <p id="revenue">0</p>
-  </div>
+  <button class="install-btn" id="installBtn" style="display:none;">
+  <i class="fa-solid fa-download"></i> Install App
+</button>
 
 </div>
 
-<!-- QUICK ACTIONS -->
-<div class="actions">
+<!-- MAIN -->
+<div class="main">
 
-  <div class="action" onclick="go('../orders page/index.html')">
-    📦 Orders
+  <div class="card">
+    <h2>Welcome Seller 👋</h2>
+    <p>Manage your products, track orders, and grow your business from one dashboard.</p>
   </div>
 
-  <div class="action" onclick="go('../upload page/index.html')">
-    ➕ Upload
+ <div class="grid">
+  <div class="box">
+    <h3>Today Sales</h3>
+    <p>KES 0</p>
   </div>
 
-  <div class="action" onclick="go('../products page/index.html')">
-    🛍 Products
+  <div class="box">
+    <h3>Orders</h3>
+    <p>0 Active</p>
   </div>
 
-  <div class="action" onclick="go('../messages page/index.html')">
-    💬 Messages
+  <div class="box">
+    <h3>Products</h3>
+    <p id="productCount">0 Listed</p>
   </div>
-
 </div>
 
-<!-- BOTTOM NAV -->
-<div class="bottom-nav">
 
-  <div class="nav-item active" onclick="go('../homepage/index.html')">
-    <i class="fa fa-home"></i>
-    Home
-  </div>
-
-  <div class="nav-item" onclick="go('../orders page/index.html')">
-    <i class="fa fa-box"></i>
-    Orders
-  </div>
-
-  <div class="nav-item" onclick="go('../upload page/index.html')">
-    <i class="fa fa-plus-circle"></i>
-    Upload
-  </div>
-
-  <div class="nav-item" onclick="go('../messages page/index.html')">
-    <i class="fa fa-comments"></i>
-    Chat
-  </div>
-
-  <div class="nav-item" onclick="go('../products page/index.html')">
-    <i class="fa fa-bag-shopping"></i>
-    Shop
-  </div>
-
-</div>
-<!-- INSTALL TOAST -->
-<div id="installToast" style="
-  position:fixed;
-  bottom:90px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#111;
-  color:#fff;
-  padding:12px 16px;
-  border-radius:12px;
-  font-size:13px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.2);
-  display:none;
-  z-index:9999;
-">
-  📦 Installing CoastMall Dashboard...
 </div>
 
 <script>
+let deferredPrompt = null;
 
-/* NAV */
-function go(page){
+const installBtn = document.getElementById("installBtn");
+
+// Detect install availability
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  // show button only when install is available
+  installBtn.style.display = "block";
+});
+
+// Install click
+installBtn.addEventListener("click", async () => {
+  if (!deferredPrompt) {
+    alert("Install not available. Open in Chrome and try again.");
+    return;
+  }
+
+  deferredPrompt.prompt();
+
+  const choice = await deferredPrompt.userChoice;
+
+  if (choice.outcome === "accepted") {
+    console.log("App installed");
+  }
+
+  deferredPrompt = null;
+  installBtn.style.display = "none";
+});
+
+// Hide if already installed (optional but nice)
+window.addEventListener("appinstalled", () => {
+  installBtn.style.display = "none";
+});
+
+function loadDashboardData(){
+
+  let products = JSON.parse(localStorage.getItem("products")) || [];
+
+  // PRODUCTS COUNT
+  document.getElementById("productCount").innerText = 
+    products.length + " Listed";
+
+  // OPTIONAL: You can also calculate earnings later
+  // let earnings = products.reduce((sum, p) => sum + Number(p.price || 0), 0);
+}
+
+loadDashboardData();
+function toggleMenu(){
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+
+  sidebar.classList.toggle("active");
+  overlay.classList.toggle("active");
+}
+function goTo(page){
   window.location.href = page;
 }
-
-/* DATA */
-function getOrders(){
-  return JSON.parse(localStorage.getItem("orders")) || [];
+document.querySelectorAll(".features a").forEach(link => {
+  link.addEventListener("click", () => {
+    closeMenu();
+  });
+});
+function closeMenu(){
+  document.getElementById("sidebar").classList.remove("active");
+  document.getElementById("overlay").classList.remove("active");
 }
-
-/* ANIMATED COUNTER */
-function animate(id, value){
-  let el = document.getElementById(id);
-  let start = 0;
-  let step = Math.ceil(value / 20);
-
-  let interval = setInterval(()=>{
-    start += step;
-    if(start >= value){
-      start = value;
-      clearInterval(interval);
-    }
-    el.innerText = start;
-  },30);
+function toggleMenu(){
+  document.getElementById("sidebar").classList.toggle("active");
+  document.getElementById("overlay").classList.toggle("active");
 }
-
-/* STATS */
-function loadStats(){
-  let orders = getOrders();
-
-  let total = orders.length;
-  let pending = orders.filter(o=>o.status!="delivered").length;
-  let delivered = orders.filter(o=>o.status=="delivered").length;
-  let revenue = orders
-    .filter(o=>o.status=="delivered")
-    .reduce((a,b)=>a+Number(b.price),0);
-
-  animate("total", total);
-  animate("pending", pending);
-  animate("delivered", delivered);
-  animate("revenue", revenue);
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .then(() => console.log("Service Worker Registered"))
+      .catch(err => console.log("SW Error:", err));
+  });
 }
-
-/* SAMPLE DATA */
-if(!localStorage.getItem("orders")){
-  localStorage.setItem("orders", JSON.stringify([
-    {name:"Shoes", price:2500, status:"pending"},
-    {name:"Bag", price:1500, status:"delivered"},
-    {name:"Watch", price:3000, status:"pending"}
-  ]));
-}
-
-loadStats();
-function showInstallToast(){
-  const toast = document.getElementById("installToast");
-  toast.style.display = "block";
-
-  setTimeout(() => {
-    toast.style.opacity = "0";
-    toast.style.transition = "0.5s";
-  }, 2500);
-
-  setTimeout(() => {
-    toast.style.display = "none";
-  }, 3200);
-}
-
-/* FIRST VISIT CHECK */
-function checkFirstVisit(){
-  const installed = localStorage.getItem("coastmall_installed");
-
-  if(!installed){
-    showInstallToast();
-    localStorage.setItem("coastmall_installed", "true");
-  }
-}
-
-checkFirstVisit();
 
 </script>
 
