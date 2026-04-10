@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>CoastMall Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -13,8 +13,7 @@ body{
   margin:0;
   font-family:Poppins;
   background:linear-gradient(135deg,#f4f6f9,#e9eef5);
-  padding-bottom:90px;
-  -webkit-tap-highlight-color: transparent;
+  padding-bottom:80px;
 }
 
 /* HEADER */
@@ -25,82 +24,7 @@ body{
   text-align:center;
   font-size:18px;
   font-weight:600;
-  position:relative;
-}
-
-/* MENU BUTTON */
-.menu-btn{
-  position:absolute;
-  left:15px;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:22px;
-  cursor:pointer;
-}
-
-/* SIDE MENU (MOBILE FRIENDLY) */
-.sidebar{
-  position:fixed;
-  top:0;
-  left:-100%;
-  width:80%;
-  max-width:300px;
-  height:100%;
-  background:#0f172a;
-  color:white;
-  padding:20px;
-  transition:0.3s ease;
-  z-index:10000;
-  overflow-y:auto;
-}
-
-/* FULL SCREEN MENU ON VERY SMALL DEVICES */
-@media (max-width: 480px){
-  .sidebar{
-    width:100%;
-    max-width:none;
-  }
-}
-
-.sidebar h3{
-  margin-top:10px;
-  font-size:18px;
-}
-
-.sidebar a,
-.sidebar button{
-  display:block;
-  width:100%;
-  padding:14px;
-  margin-top:12px;
-  border-radius:12px;
-  border:none;
-  font-size:15px;
-  font-family:Poppins;
-  cursor:pointer;
-}
-
-.sidebar a{
-  background:#1e293b;
-  color:white;
-  text-decoration:none;
-}
-
-.sidebar button{
-  background:#2563eb;
-  color:white;
-}
-
-/* OVERLAY */
-.overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.5);
-  display:none;
-  z-index:9999;
+  letter-spacing:0.5px;
 }
 
 /* STATS */
@@ -111,35 +35,37 @@ body{
   padding:15px;
 }
 
-/* MOBILE STACK */
-@media (max-width: 600px){
-  .stats{
-    grid-template-columns:1fr;
-  }
-}
-
 .card{
   background:white;
   padding:16px;
   border-radius:16px;
   box-shadow:0 6px 15px rgba(0,0,0,0.08);
+  transition:0.3s;
 }
 
-.card h4{margin:0;font-size:12px;color:#777;}
-.card p{font-size:20px;font-weight:700;margin-top:8px;}
+.card:hover{
+  transform:translateY(-3px);
+}
 
-/* ACTIONS */
+.card h4{
+  margin:0;
+  font-size:12px;
+  color:#777;
+}
+
+.card p{
+  font-size:20px;
+  font-weight:700;
+  margin-top:8px;
+  color:#111;
+}
+
+/* QUICK ACTIONS */
 .actions{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:12px;
   padding:0 15px;
-}
-
-@media (max-width:600px){
-  .actions{
-    grid-template-columns:1fr;
-  }
 }
 
 .action{
@@ -148,7 +74,14 @@ body{
   border-radius:16px;
   text-align:center;
   cursor:pointer;
+  box-shadow:0 5px 12px rgba(0,0,0,0.06);
+  transition:0.3s;
   font-weight:500;
+}
+
+.action:hover{
+  background:#eef2ff;
+  transform:scale(1.02);
 }
 
 /* BOTTOM NAV */
@@ -165,15 +98,15 @@ body{
   box-shadow:0 -2px 15px rgba(0,0,0,0.08);
   border-top-left-radius:18px;
   border-top-right-radius:18px;
-  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .nav-item{
   text-align:center;
-  font-size:10px;
+  font-size:11px;
   color:#666;
-  flex:1;
   cursor:pointer;
+  flex:1;
+  transition:0.2s;
 }
 
 .nav-item i{
@@ -182,75 +115,206 @@ body{
   margin-bottom:3px;
 }
 
-/* TOUCH IMPROVEMENTS */
-button, .action, .nav-item, a{
-  -webkit-tap-highlight-color: transparent;
+.nav-item:hover{
+  color:#2563eb;
+}
+
+.active{
+  color:#2563eb;
+  font-weight:600;
+}
+
+/* SMALL TAG */
+.tag{
+  text-align:center;
+  font-size:12px;
+  color:#888;
+  margin-top:10px;
 }
 </style>
+
 </head>
 
 <body>
 
-<!-- OVERLAY -->
-<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+<div class="header">📦 CoastMall Seller Dashboard</div>
 
-<!-- SIDE MENU -->
-<div class="sidebar" id="sidebar">
-  <h3>📦 Menu</h3>
-
-  <a href="#">🏠 Home</a>
-  <a href="#">📦 Orders</a>
-  <a href="#">➕ Upload</a>
-  <a href="#">🛍 Products</a>
-  <a href="#">💬 Messages</a>
-
-  <button onclick="alert('Install feature here')">📲 Install App</button>
-  <button onclick="closeMenu()">Close</button>
-</div>
-
-<!-- HEADER -->
-<div class="header">
-  <span class="menu-btn" onclick="openMenu()">
-    <i class="fa fa-bars"></i>
-  </span>
-  📦 CoastMall Dashboard
-</div>
+<div class="tag">Manage your store in real time</div>
 
 <!-- STATS -->
 <div class="stats">
-  <div class="card"><h4>Total Orders</h4><p>0</p></div>
-  <div class="card"><h4>Pending</h4><p>0</p></div>
-  <div class="card"><h4>Delivered</h4><p>0</p></div>
-  <div class="card"><h4>Revenue</h4><p>0</p></div>
+
+  <div class="card">
+    <h4>Total Orders</h4>
+    <p id="total">0</p>
+  </div>
+
+  <div class="card">
+    <h4>Pending</h4>
+    <p id="pending">0</p>
+  </div>
+
+  <div class="card">
+    <h4>Delivered</h4>
+    <p id="delivered">0</p>
+  </div>
+
+  <div class="card">
+    <h4>Revenue</h4>
+    <p id="revenue">0</p>
+  </div>
+
 </div>
 
-<!-- ACTIONS -->
+<!-- QUICK ACTIONS -->
 <div class="actions">
-  <div class="action">📦 Orders</div>
-  <div class="action">➕ Upload</div>
-  <div class="action">🛍 Products</div>
-  <div class="action">💬 Messages</div>
+
+  <div class="action" onclick="go('../orders page/index.html')">
+    📦 Orders
+  </div>
+
+  <div class="action" onclick="go('../upload page/index.html')">
+    ➕ Upload
+  </div>
+
+  <div class="action" onclick="go('../products page/index.html')">
+    🛍 Products
+  </div>
+
+  <div class="action" onclick="go('../messages page/index.html')">
+    💬 Messages
+  </div>
+
 </div>
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
-  <div class="nav-item"><i class="fa fa-home"></i>Home</div>
-  <div class="nav-item"><i class="fa fa-box"></i>Orders</div>
-  <div class="nav-item"><i class="fa fa-plus-circle"></i>Upload</div>
-  <div class="nav-item"><i class="fa fa-comments"></i>Chat</div>
-  <div class="nav-item"><i class="fa fa-bag-shopping"></i>Shop</div>
+
+  <div class="nav-item active" onclick="go('../homepage/index.html')">
+    <i class="fa fa-home"></i>
+    Home
+  </div>
+
+  <div class="nav-item" onclick="go('../orders page/index.html')">
+    <i class="fa fa-box"></i>
+    Orders
+  </div>
+
+  <div class="nav-item" onclick="go('../upload page/index.html')">
+    <i class="fa fa-plus-circle"></i>
+    Upload
+  </div>
+
+  <div class="nav-item" onclick="go('../messages page/index.html')">
+    <i class="fa fa-comments"></i>
+    Chat
+  </div>
+
+  <div class="nav-item" onclick="go('../products page/index.html')">
+    <i class="fa fa-bag-shopping"></i>
+    Shop
+  </div>
+
+</div>
+<!-- INSTALL TOAST -->
+<div id="installToast" style="
+  position:fixed;
+  bottom:90px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#111;
+  color:#fff;
+  padding:12px 16px;
+  border-radius:12px;
+  font-size:13px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  display:none;
+  z-index:9999;
+">
+  📦 Installing CoastMall Dashboard...
 </div>
 
 <script>
-function openMenu(){
-  document.getElementById("sidebar").style.left = "0";
-  document.getElementById("overlay").style.display = "block";
+
+/* NAV */
+function go(page){
+  window.location.href = page;
 }
 
-function closeMenu(){
-  document.getElementById("sidebar").style.left = "-100%";
-  document.getElementById("overlay").style.display = "none";
+/* DATA */
+function getOrders(){
+  return JSON.parse(localStorage.getItem("orders")) || [];
 }
+
+/* ANIMATED COUNTER */
+function animate(id, value){
+  let el = document.getElementById(id);
+  let start = 0;
+  let step = Math.ceil(value / 20);
+
+  let interval = setInterval(()=>{
+    start += step;
+    if(start >= value){
+      start = value;
+      clearInterval(interval);
+    }
+    el.innerText = start;
+  },30);
+}
+
+/* STATS */
+function loadStats(){
+  let orders = getOrders();
+
+  let total = orders.length;
+  let pending = orders.filter(o=>o.status!="delivered").length;
+  let delivered = orders.filter(o=>o.status=="delivered").length;
+  let revenue = orders
+    .filter(o=>o.status=="delivered")
+    .reduce((a,b)=>a+Number(b.price),0);
+
+  animate("total", total);
+  animate("pending", pending);
+  animate("delivered", delivered);
+  animate("revenue", revenue);
+}
+
+/* SAMPLE DATA */
+if(!localStorage.getItem("orders")){
+  localStorage.setItem("orders", JSON.stringify([
+    {name:"Shoes", price:2500, status:"pending"},
+    {name:"Bag", price:1500, status:"delivered"},
+    {name:"Watch", price:3000, status:"pending"}
+  ]));
+}
+
+loadStats();
+function showInstallToast(){
+  const toast = document.getElementById("installToast");
+  toast.style.display = "block";
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transition = "0.5s";
+  }, 2500);
+
+  setTimeout(() => {
+    toast.style.display = "none";
+  }, 3200);
+}
+
+/* FIRST VISIT CHECK */
+function checkFirstVisit(){
+  const installed = localStorage.getItem("coastmall_installed");
+
+  if(!installed){
+    showInstallToast();
+    localStorage.setItem("coastmall_installed", "true");
+  }
+}
+
+checkFirstVisit();
+
 </script>
 
 </body>
