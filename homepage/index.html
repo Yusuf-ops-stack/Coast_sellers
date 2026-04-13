@@ -382,9 +382,6 @@ body{
 </div>
 
 <script>
-if(!localStorage.getItem("loggedUser")){
-  window.location.href = "sign up/index.html";
-}
 let userData = JSON.parse(localStorage.getItem("loggedUser"));
 
 if(userData){
@@ -398,7 +395,7 @@ if(userData){
 let deferredPrompt = null;
 const installBtn = document.getElementById("installBtn");
 
-installBtn.style.display = "none";
+if (installBtn) installBtn.style.display = "none";
 
 window.addEventListener("beforeinstallprompt", (e) => {
   console.log("INSTALL EVENT FIRED ✔");
@@ -406,62 +403,69 @@ window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
 
-  installBtn.style.display = "block";
+  if (installBtn) installBtn.style.display = "block";
 });
 
-installBtn.addEventListener("click", async () => {
-  if (!deferredPrompt) {
-    alert("App not installable yet. Open in Chrome.");
-    return;
-  }
+if (installBtn) {
+  installBtn.addEventListener("click", async () => {
+    if (!deferredPrompt) {
+      alert("App not installable yet. Open in Chrome.");
+      return;
+    }
 
-  deferredPrompt.prompt();
+    deferredPrompt.prompt();
 
-  const result = await deferredPrompt.userChoice;
+    const result = await deferredPrompt.userChoice;
+    console.log(result.outcome);
 
-  console.log(result.outcome);
-
-  deferredPrompt = null;
-  installBtn.style.display = "none";
-});
+    deferredPrompt = null;
+    installBtn.style.display = "none";
+  });
+}
 
 window.addEventListener("appinstalled", () => {
-  installBtn.style.display = "none";
+  if (installBtn) installBtn.style.display = "none";
 });
 
-
-function loadDashboardData(){
-
+function loadDashboardData() {
   let products = JSON.parse(localStorage.getItem("products")) || [];
 
-  // PRODUCTS COUNT
-  document.getElementById("productCount").innerText = 
-    products.length + " Listed";
-
-  // OPTIONAL: You can also calculate earnings later
-  // let earnings = products.reduce((sum, p) => sum + Number(p.price || 0), 0);
+  const productCount = document.getElementById("productCount");
+  if (productCount) {
+    productCount.innerText = products.length + " Listed";
+  }
 }
 
 loadDashboardData();
-function toggleMenu(){
+
+function toggleMenu() {
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("overlay");
 
-  sidebar.classList.toggle("active");
-  overlay.classList.toggle("active");
+  if (sidebar && overlay) {
+    sidebar.classList.toggle("active");
+    overlay.classList.toggle("active");
+  }
 }
-function goTo(page){
+
+function closeMenu() {
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+
+  if (sidebar && overlay) {
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
+  }
+}
+
+function goTo(page) {
   window.location.href = page;
 }
+
 document.querySelectorAll(".features a").forEach(link => {
-  link.addEventListener("click", () => {
-    closeMenu();
-  });
+  link.addEventListener("click", closeMenu);
 });
-function closeMenu(){
-  document.getElementById("sidebar").classList.remove("active");
-  document.getElementById("overlay").classList.remove("active");
-}
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js")
@@ -469,20 +473,16 @@ if ("serviceWorker" in navigator) {
       .catch(err => console.log("SW Error:", err));
   });
 }
-
 </script>
 <script type="module">
-
-// 🔥 IMPORT FIREBASE
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyD7DFAUxSfpGWmVegVY38J6khc9o5JE3LA",
   authDomain: "coastmall-sellers.firebaseapp.com",
   projectId: "coastmall-sellers",
-  storageBucket: "coastmall-sellers.firebasestorage.app",
+  storageBucket: "coastmall-sellers.appspot.com",
   messagingSenderId: "360613421614",
   appId: "1:360613421614:web:6912f4a5a131deb1cef5bf"
 };
@@ -490,67 +490,32 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// 🔥 PROTECT PAGE
 onAuthStateChanged(auth, (user) => {
 
-  if(user){
-    console.log("Logged in:", user.email);
+  if (user) {
+    // ✅ USER LOGGED IN
+    const welcome = document.getElementById("welcomeText");
+    if (welcome) {
+      welcome.innerText = "Welcome " + user.email + " 👋";
+    }
 
-    // ✅ Sync localStorage
     localStorage.setItem("loggedUser", JSON.stringify({
       email: user.email,
       uid: user.uid
     }));
 
   } else {
-    console.log("No account → redirecting...");
+    // ❌ NOT LOGGED IN → REDIRECT
+    console.log("Redirecting...");
 
-    localStorage.removeItem("loggedUser");
-
-    window.location.href = "sign up/index.html";
+    // ✅ FIXED PATH (NO spaces)
+    window.location.replace("/sign up/index.html");
   }
 
-}); // ✅ THIS WAS MISSING
-
+});
 </script>
 
-<script>
-let user = JSON.parse(localStorage.getItem("loggedUser"));
 
-if(user){
-  console.log("Welcome", user.name);
-}
-function showSignupPopup(){
-  document.getElementById("signupPopup").style.display = "block";
-}
-
-function closePopup(){
-  document.getElementById("signupPopup").style.display = "none";
-}
-
-function goSignup(){
-  window.location.href = "sign up/index.html";
-}
-
-
-</script>
-<script type="module">
-import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-window.logoutUser = function(){
-
-  const auth = getAuth();
-
-  signOut(auth).then(() => {
-
-    localStorage.removeItem("loggedUser");
-
-    window.location.href = "sign in/index.html";
-
-  });
-
-}
-</script>
 
 </body>
 </html>
