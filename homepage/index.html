@@ -290,6 +290,10 @@ body{
     <li><a href="/messages page/index.html"><i class="fa-solid fa-comments"></i> Buyer Chat System</a></li>
     <li><a href="/notifications page/index.html"><i class="fa-solid fa-bell"></i> Notifications</a></li>
     <li><a href="/upload page/index.html"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</a></li>
+    <li onclick="logoutUser()">
+  <i class="fa-solid fa-right-from-bracket"></i> Logout
+</li>
+
   </ul>
 </div>
 
@@ -307,7 +311,7 @@ body{
 <div class="main">
 
   <div class="card">
-    <h2>Welcome Seller 👋</h2>
+  <h2 id="welcomeText">Welcome 👋</h2>
     <p>Manage your products, track orders, and grow your business from one dashboard.</p>
   </div>
 
@@ -377,6 +381,18 @@ body{
 
 </div>
 
+<script>
+if(!localStorage.getItem("loggedUser")){
+  window.location.href = "sign up/index.html";
+}
+let userData = JSON.parse(localStorage.getItem("loggedUser"));
+
+if(userData){
+  document.getElementById("welcomeText").innerText =
+    "Welcome " + userData.email + " 👋";
+}
+
+</script>
 
 <script>
 let deferredPrompt = null;
@@ -446,10 +462,6 @@ function closeMenu(){
   document.getElementById("sidebar").classList.remove("active");
   document.getElementById("overlay").classList.remove("active");
 }
-function toggleMenu(){
-  document.getElementById("sidebar").classList.toggle("active");
-  document.getElementById("overlay").classList.toggle("active");
-}
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js")
@@ -461,31 +473,44 @@ if ("serviceWorker" in navigator) {
 </script>
 <script type="module">
 
+// 🔥 IMPORT FIREBASE
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const auth = getAuth();
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyD7DFAUxSfpGWmVegVY38J6khc9o5JE3LA",
+  authDomain: "coastmall-sellers.firebaseapp.com",
+  projectId: "coastmall-sellers",
+  storageBucket: "coastmall-sellers.firebasestorage.app",
+  messagingSenderId: "360613421614",
+  appId: "1:360613421614:web:6912f4a5a131deb1cef5bf"
+};
 
-let isLoggedIn = false;
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-// Check auth state
+// 🔥 PROTECT PAGE
 onAuthStateChanged(auth, (user) => {
 
   if(user){
-    isLoggedIn = true;
     console.log("Logged in:", user.email);
+
+    // ✅ Sync localStorage
+    localStorage.setItem("loggedUser", JSON.stringify({
+      email: user.email,
+      uid: user.uid
+    }));
+
   } else {
-    isLoggedIn = false;
+    console.log("No account → redirecting...");
 
-    // ⏱️ Show popup after 5 seconds
-    setTimeout(() => {
-      if(!isLoggedIn){
-        showSignupPopup();
-      }
-    }, 5000);
+    localStorage.removeItem("loggedUser");
 
+    window.location.href = "sign up/index.html";
   }
 
-});
+}); // ✅ THIS WAS MISSING
 
 </script>
 
@@ -495,8 +520,6 @@ let user = JSON.parse(localStorage.getItem("loggedUser"));
 if(user){
   console.log("Welcome", user.name);
 }
-let popupShown = false;
-
 function showSignupPopup(){
   document.getElementById("signupPopup").style.display = "block";
 }
@@ -509,6 +532,24 @@ function goSignup(){
   window.location.href = "sign up/index.html";
 }
 
+
+</script>
+<script type="module">
+import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+window.logoutUser = function(){
+
+  const auth = getAuth();
+
+  signOut(auth).then(() => {
+
+    localStorage.removeItem("loggedUser");
+
+    window.location.href = "sign in/index.html";
+
+  });
+
+}
 </script>
 
 </body>
